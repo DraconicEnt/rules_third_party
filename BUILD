@@ -1,6 +1,6 @@
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 
-exports_files(["test.cpp"])
+exports_files(["COSOperator.patch"])
 
 filegroup(
     name = "mygui_tools",

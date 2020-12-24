@@ -6,7 +6,7 @@ def irrlicht():
         http_archive,
         name = "irrlicht",
         patches = [
-            "//repositories:COSOperator.patch"
+            "@third_party//:COSOperator.patch"
         ],
         urls = [
             "http://downloads.sourceforge.net/irrlicht/irrlicht-1.8.4.zip"
