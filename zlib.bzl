@@ -44,8 +44,9 @@ def zlib():
         url = "https://zlib.net/zlib-1.2.11.tar.gz",
         sha256 = "c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1",
         build_file_content = """
-cc_library(
-    name = "zlib",
+
+filegroup(
+    name = "zlib_headers",
     srcs = [
         # Public Headers
         "zlib-1.2.11/zconf.h",
@@ -61,6 +62,12 @@ cc_library(
         "zlib-1.2.11/inftrees.h",
         "zlib-1.2.11/trees.h",
         "zlib-1.2.11/zutil.h",
+    ]
+)
+cc_library(
+    name = "zlib",
+    srcs = [
+        ":zlib_headers",
 
         # Source Code
         "zlib-1.2.11/adler32.c",
@@ -78,6 +85,12 @@ cc_library(
         "zlib-1.2.11/trees.c",
         "zlib-1.2.11/uncompr.c",
         "zlib-1.2.11/zutil.c"
+    ],
+    hdrs = [
+        ":zlib_headers"
+    ],
+    includes = [
+        "zlib-1.2.11"
     ],
 
     visibility = ["//visibility:public"]

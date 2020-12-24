@@ -14,14 +14,23 @@ cmake_external(
 name = "tiff",
 lib_source = "@tiff//:tiff-4.1.0",
 
-#static_libraries = [
-   #"tiff.lib"
-#   "libport.a"
-#],
+shared_libraries = select({
+    "@bazel_tools//src/conditions:windows": [
 
-shared_libraries = [
-    "libtiff.so"
-],
+    ],
+    "//conditions:default": [
+        "libtiff.so"
+    ]
+}),
+
+static_libraries = select({
+    "@bazel_tools//src/conditions:windows": [
+        "tiff.lib"
+    ],
+    "//conditions:default": [
+
+    ]
+}),
 
 # Windows only
 generate_crosstool_file = True,
@@ -29,6 +38,10 @@ cmake_options = ["-GNinja"],
 make_commands = [
    "ninja",
    "ninja install",
+   "ls",
+   "ls tiff",
+   "ls tiff/bin",
+   "ls tiff/lib"
 ],
 
 visibility = ["//visibility:public"]

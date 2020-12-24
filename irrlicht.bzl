@@ -1,7 +1,16 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
+# load("//:png.bzl", "png")
+# load("//:jpeg.bzl", "jpeg")
+# load("//:bzip2.bzl", "bzip2")
+
 def irrlicht():
+    # Ensure dependencies are loaded.
+#    png()
+#    jpeg()
+#    bzip2()
+
     maybe(
         http_archive,
         name = "irrlicht",
@@ -41,10 +50,10 @@ cc_library(
         ],
         exclude = [
             "irrlicht-1.8.4/source/Irrlicht/zlib/**/*",
-            "irrlicht-1.8.4/source/Irrlicht/bzip2/**/*",
-            "irrlicht-1.8.4/source/Irrlicht/libpng/**/*",
+            # "irrlicht-1.8.4/source/Irrlicht/bzip2/**/*",
+            # "irrlicht-1.8.4/source/Irrlicht/libpng/**/*",
 
-            "irrlicht-1.8.4/source/Irrlicht/jpeglib/**/*",
+            # "irrlicht-1.8.4/source/Irrlicht/jpeglib/**/*",
             "irrlicht-1.8.4/source/Irrlicht/MacOSX/**/*"
         ]
     ),
@@ -58,10 +67,9 @@ cc_library(
         ":irrlicht_includes"
     ],
     deps = [
-        "@zlib//:zlib",
-        "@png//:png",
-        "@jpeg//:jpeg",
-        "@bzip2//:bzip2"
+        # "@png//:png",
+        # "@jpeg//:jpeg",
+        # "@bzip2//:bzip2"
     ],
     linkopts = [
         "-lGL",
@@ -72,7 +80,8 @@ cc_library(
     includes = [
         "irrlicht-1.8.4/include",
         "irrlicht-1.8.4/source/Irrlicht"
-    ]
+    ],
+    visibility = ["//visibility:public"]
 )
     """
     )

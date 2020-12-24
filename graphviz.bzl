@@ -1,11 +1,20 @@
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
+load("//:zlib.bzl", "zlib")
+load("//:bison.bzl", "bison")
+load("//:harfbuzz.bzl", "harfbuzz")
+
 def graphviz():
+    # Ensure dependencies are loaded
+    zlib()
+    harfbuzz()
+
     maybe(
         new_git_repository,
         name = "graphviz",
         remote = "https://gitlab.com/graphviz/graphviz.git",
+        shallow_since = "1593420362 +0000",
         # Release 2.44.1
         commit = "771bc4dbff3e6f358fa75cdc7774a413ccacad51",
         build_file_content = """
@@ -40,8 +49,6 @@ make_commands = select({
        "ninja install"
    ],
    "//conditions:default": [
-        #"echo $EXT_BUILD_DEPS",
-        #"exit 5",
        "make -j$(nproc)",
        "make install",
        "cp plugin/core/*.so* graphviz/lib",
@@ -113,15 +120,27 @@ binaries = select({
     ]
 }),
 
-cache_entries = {
-    "CMAKE_CXX_FLAGS": "-I $EXT_BUILD_DEPS/harfbuzz/include/harfbuzz",
-    "CMAKE_C_FLAGS": "-I $EXT_BUILD_DEPS/harfbuzz/include/harfbuzz"
-},
+cache_entries = select({
+    "@bazel_tools//src/conditions:windows": {
+        "BISON_EXECUTABLE": "$EXT_BUILD_DEPS/bison_windows/bin/bison_windows.exe",
+        "FLEX_EXECUTABLE": "$EXT_BUILD_DEPS/bison_windows/bin/flex_windows.exe"
+    },
+
+    # Linux
+    "//conditions:default": {
+        "CMAKE_CXX_FLAGS": "-I $EXT_BUILD_DEPS/harfbuzz/include/harfbuzz",
+        "CMAKE_C_FLAGS": "-I $EXT_BUILD_DEPS/harfbuzz/include/harfbuzz",
+        "BISON_EXECUTABLE": "$EXT_BUILD_DEPS/bison_linux/bin/bison"
+    }
+}),
 
 deps = [
     "@zlib//:zlib",
     "@harfbuzz//:harfbuzz"
-],
+] + select({
+    "@bazel_tools//src/conditions:windows": ["@bison_windows//:bison_windows", "@bison_windows//:flex_windows"],
+    "//conditions:default": ["@bison_linux//:bison_linux"]
+}),
 
 visibility = ["//visibility:public"]
 )
