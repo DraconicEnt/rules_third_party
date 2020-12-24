@@ -1,0 +1,11 @@
+--- irrlicht-1.8.4/source/Irrlicht/COSOperator.cpp	2020-12-23 20:40:26.007822592 -0800
++++ irrlicht-1.8.4/source/Irrlicht/COSOperator.cpp.new	2020-12-23 20:41:15.394986408 -0800
+@@ -13,7 +13,7 @@
+ #include <unistd.h>
+ #ifndef _IRR_SOLARIS_PLATFORM_
+ #include <sys/types.h>
+-#include <sys/sysctl.h>
++//#include <sys/sysctl.h>
+ #endif
+ #endif
+ 
