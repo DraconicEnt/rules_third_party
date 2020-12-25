@@ -36,6 +36,42 @@ filegroup(
     )
 )
 
+# Renderer configuration
+config_setting(
+    name = "no_renderer_direct3d8",
+    define_values = {
+        "irrlicht_d3d8": "disabled",
+    }
+)
+
+config_setting(
+    name = "no_renderer_direct3d9",
+    define_values = {
+        "irrlicht_d3d9": "disabled",
+    }
+)
+
+config_setting(
+    name = "no_renderer_opengl",
+    define_values = {
+        "irrlicht_opengl": "disabled",
+    }
+)
+
+config_setting(
+    name = "no_renderer_software",
+    define_values = {
+        "irrlicht_software": "disabled",
+    }
+)
+
+config_setting(
+    name = "no_renderer_burnings",
+    define_values = {
+        "irrlicht_burnings": "disabled",
+    }
+)
+
 cc_library(
     name = "irrlicht",
     srcs = [
@@ -57,12 +93,38 @@ cc_library(
             "irrlicht-1.8.4/source/Irrlicht/MacOSX/**/*"
         ]
     ),
-    copts = [
-        "-std=gnu++11"
-    ],
+    copts = select({
+       "@bazel_tools//src/conditions:windows": [
+
+       ],
+       "//conditions:default": [
+            "-std=gnu++11"
+        ],
+    }),
+
     defines = [
         "NO_IRR_COMPILE_WITH_ZIP_ENCRYPTION_"
-    ],
+    # Handle D3D8
+    ] + select({
+         "//conditions:default": [],
+        ":no_renderer_direct3d8": ["NO_IRR_COMPILE_WITH_DIRECT3D_8_"]
+    # Handle D3D9
+    }) + select({
+        "//conditions:default": [],
+        ":no_renderer_direct3d9": ["NO_IRR_COMPILE_WITH_DIRECT3D_9_"]
+    # Handle OpenGL
+    }) + select({
+        "//conditions:default": [],
+        ":no_renderer_opengl": ["NO_IRR_COMPILE_WITH_OPENGL_"]
+    # Handle software
+    }) + select({
+        "//conditions:default": [],
+        ":no_renderer_software": ["NO_IRR_COMPILE_WITH_SOFTWARE_"]
+    # Handle burnings
+    }) + select({
+        "//conditions:default": [],
+        ":no_renderer_burnings": ["NO_IRR_COMPILE_WITH_BURNINGSVIDEO_"]
+    }),
     hdrs = [
         ":irrlicht_includes"
     ],

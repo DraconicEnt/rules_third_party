@@ -89,8 +89,6 @@ jobs:
               run: |
                 bazel build @xml2//:xml2
 
-            # FIXME: Doesn't work on Windows CI right now - DirectX SDK?
             - name: Build Irrlicht
-              if: ${{ matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04' }}
               run: |
-                bazel build @irrlicht//:irrlicht
+                bazel build @irrlicht//:irrlicht --define irrlicht_d3d8=disabled --define irrlicht_d3d9=disabled
