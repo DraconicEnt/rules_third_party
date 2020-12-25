@@ -19,7 +19,7 @@ jobs:
     build:
         strategy:
             matrix:
-                os: [ windows-2019, ubuntu-18.04, ubuntu-20.04 ]
+                os: [ windows-2019, ubuntu-18.04, ubuntu-20.04, macos-11.0, macos-10.15 ]
 
         # The type of runner that the job will run on
         runs-on: ${{ matrix.os }}
@@ -43,11 +43,14 @@ jobs:
                 bazel build @harfbuzz//:harfbuzz
 
             - name: Build CURL
+              # FIXME: Requires OpenSSL on MacOS
+              if: ${{ matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04' || matrix.os == 'windows-2019' }}
               run: |
                 bazel build @curl//:curl
 
             # Should already be built from libpng
             - name: Build ZLib
+              if: ${{ matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04' || matrix.os == 'windows-2019' }}
               run: |
                 bazel build @zlib//:zlib
 
@@ -56,16 +59,17 @@ jobs:
                 bazel build @enet//:enet
 
             - name: Build JPEG
-              if: ${{ matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04' }}
+              if: ${{ matrix.os != 'windows-2019' && matrix.os != 'macos-11.0' && matrix.os != 'macos-10.15'  }}
               run: |
                 bazel build @jpeg//:jpeg
 
             - name: Build BZIP2
-              if: ${{ matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04' }}
+              if: ${{ matrix.os != 'windows-2019' }}
               run: |
                 bazel build @bzip2//:bzip2
 
             - name: Build FreeType
+              if: ${{ matrix.os != 'macos-11.0' && matrix.os != 'macos-10.15' }}
               run: |
                 bazel build @freetype//:freetype
 
@@ -74,6 +78,7 @@ jobs:
                 bazel build @iconv//:iconv
 
             - name: Build PhysFS
+              if: ${{ matrix.os != 'macos-11.0' && matrix.os != 'macos-10.15'  }}
               run: |
                 bazel build @physfs//:physfs
 
@@ -82,13 +87,16 @@ jobs:
                 bazel build @lzma//:lzma
 
             - name: Build TIFF
+              if: ${{ matrix.os != 'macos-11.0' && matrix.os != 'macos-10.15' }}
               run: |
                 bazel build @tiff//:tiff
 
             - name: Build XML2
+              if: ${{ matrix.os != 'macos-11.0' && matrix.os != 'macos-10.15' }}
               run: |
                 bazel build @xml2//:xml2
 
             - name: Build Irrlicht
+              if: ${{ matrix.os != 'macos-11.0' && matrix.os != 'macos-10.15' }}
               run: |
                 bazel build @irrlicht//:irrlicht --define irrlicht_d3d8=disabled --define irrlicht_d3d9=disabled
