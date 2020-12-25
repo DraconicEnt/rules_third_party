@@ -17,7 +17,7 @@ The following targets support the following platforms:
 |        ENet            | load("@third_party//:enet.bzl", "enet")         | @enet//:enet          | &#10003; | &#10003; | &#10007; |
 |        CURL            | load("@third_party//:curl.bzl", "curl")         | @curl//:curl          | &#10003; | &#10003; | &#10007; |
 |        BZIP2           | load("@third_party//:bzip.bzl", "bzl")          | @bzip//:bzip          | &#10003; | &#10007; | &#10007; |
-|        Irrlicht        | load("@third_party//:irrlicht.bzl", "irrlicht") | @irrlicht//:irrlicht  | &#10003; | &#10007; | &#10007; |
+|        Irrlicht        | load("@third_party//:irrlicht.bzl", "irrlicht") | @irrlicht//:irrlicht  | &#10003; | &#10003; | &#10007; |
 |        Freetype        | load("@third_party//:freetype.bzl", "freetype") | @freetype//:freetype  | &#10003; | &#10003; | &#10007; |
 |         IConv          | load("@third_party//:iconv.bzl", "iconv")       | @iconv//:iconv        | &#10003; | &#10003; | &#10007; |
 |         PhysFS         | load("@third_party//:physfs.bzl", "physfs")     | @physfs//:physfs      | &#10003; | &#10003; | &#10007; |
