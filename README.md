@@ -25,6 +25,67 @@ The following targets support the following platforms:
 |         TIFF           | load("@third_party//:tiff.bzl", "tiff")         | @tiff//:tiff          | &#10003; | &#10003; | &#10007; |
 |         XML2           | load("@third_party//:xml2", "xml2")             | @xml2//:xml2          | &#10003; | &#10003; | &#10007; |
 
+## Build Configurations
+
+Some items support configurations specified on the bazel command line. They are listed below.
+
+### Irrlicht
+
+#### irrlicht_d3d8
+
+Used to request that D3D8 support is not compiled. May be used by:
+
+```bash
+bazel build @irrlicht//:irrlicht --define irrlicht_d3d8=disabled
+```
+
+If set to disabled, ```NO_IRR_COMPILE_WITH_DIRECT3D_8_``` is passed as a define when compiling. If not specified,
+Irrlicht default behavior is used.
+
+#### irrlicht_d3d9
+
+Used to request that D3D9 support is not compiled. May be used by:
+
+```bash
+bazel build @irrlicht//:irrlicht --define irrlicht_d3d9=disabled
+```
+
+If set to disabled, ```NO_IRR_COMPILE_WITH_DIRECT3D_9_``` is passed as a define when compiling. If not specified,
+Irrlicht default behavior is used.
+
+#### irrlicht_opengl
+
+Used to request that OpenGL support is not compiled. May be used by:
+
+```bash
+bazel build @irrlicht//:irrlicht --define irrlicht_opengl=disabled
+```
+
+If set to disabled, ```NO_IRR_COMPILE_WITH_OPENGL_``` is passed as a define when compiling. If not specified,
+Irrlicht default behavior is used.
+
+#### irrlicht_software
+
+Used to request that software render support is not compiled. May be used by:
+
+```bash
+bazel build @irrlicht//:irrlicht --define irrlicht_software=disabled
+```
+
+If set to disabled, ```NO_IRR_COMPILE_WITH_SOFTWARE_``` is passed as a define when compiling. If not specified,
+Irrlicht default behavior is used.
+
+#### irrlicht_burnings
+
+Used to request that burnings video render support is not compiled. May be used by:
+
+```bash
+bazel build @irrlicht//:irrlicht --define irrlicht_burnings=disabled
+```
+
+If set to disabled, ```NO_IRR_COMPILE_WITH_BURNINGSVIDEO_``` is passed as a define when compiling. If not specified,
+Irrlicht default behavior is used.
+
 ## Usage
 
 Add the following to your WORKSPACE file:
