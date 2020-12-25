@@ -124,7 +124,20 @@ cc_library(
     }) + select({
         "//conditions:default": [],
         ":no_renderer_burnings": ["NO_IRR_COMPILE_WITH_BURNINGSVIDEO_"]
+    # Platform specific defines
+    }) + select({
+        "@bazel_tools//src/conditions:windows": [
+            "_WIN64",
+            "WIN64",
+            "_WINDOWS",
+            "_MBCS",
+            "_USRDLL"
+        ],
+        "//conditions:default": [
+
+        ]
     }),
+
     hdrs = [
         ":irrlicht_includes"
     ],
