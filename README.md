@@ -9,21 +9,21 @@ The purpose of this repository is to provide bazel-native (or tuned rules_foreig
 
 The following targets support the following platforms:
 
-| Library/Application    |   Import                                        | Target                |  Linux?  | Windows? |   OSX?   |
-| ---------------------- | ----------------------------------------------- | --------------------  | -------- | -------- | -------- |
-|        ZLib            | load("@third_party//:zlib.bzl", "zlib")         | @zlib//:zlib          | &#10003; | &#10003; | &#10007; |
-|        PNG             | load("@third_party//:png.bzl", "png")           | @png//:png            | &#10007; | &#10007; | &#10007; |
-|        Harfbuzz        | load("@third_party//:harfbuzz.bzl", "harfbuzz") | @harfbuzz//:harfbuzz  | &#10003; | &#10003; | &#10007; |
-|        ENet            | load("@third_party//:enet.bzl", "enet")         | @enet//:enet          | &#10003; | &#10003; | &#10007; |
-|        CURL            | load("@third_party//:curl.bzl", "curl")         | @curl//:curl          | &#10003; | &#10003; | &#10007; |
-|        BZIP2           | load("@third_party//:bzip.bzl", "bzl")          | @bzip//:bzip          | &#10003; | &#10007; | &#10007; |
-|        Irrlicht        | load("@third_party//:irrlicht.bzl", "irrlicht") | @irrlicht//:irrlicht  | &#10003; | &#10003; | &#10007; |
-|        Freetype        | load("@third_party//:freetype.bzl", "freetype") | @freetype//:freetype  | &#10003; | &#10003; | &#10007; |
-|         IConv          | load("@third_party//:iconv.bzl", "iconv")       | @iconv//:iconv        | &#10003; | &#10003; | &#10007; |
-|         PhysFS         | load("@third_party//:physfs.bzl", "physfs")     | @physfs//:physfs      | &#10003; | &#10003; | &#10007; |
-|         LZMA           | load("@third_party//:lzma.bzl", "lzma")         | @lzma//:lzma          | &#10003; | &#10003; | &#10007; |
-|         TIFF           | load("@third_party//:tiff.bzl", "tiff")         | @tiff//:tiff          | &#10003; | &#10003; | &#10007; |
-|         XML2           | load("@third_party//:xml2", "xml2")             | @xml2//:xml2          | &#10003; | &#10003; | &#10007; |
+| Library/Application    |    Versions   | Import                                          | Target                |  Linux?  | Windows? |   OSX?   |
+| ---------------------- | ------------- | ----------------------------------------------- | --------------------  | -------- | -------- | -------- |
+|        ZLib            |    1.2.11     | load("@third_party//:zlib.bzl", "zlib")         | @zlib//:zlib          | &#10003; | &#10003; | &#10007; |
+|        PNG             |    1.6.37     | load("@third_party//:png.bzl", "png")           | @png//:png            | &#10007; | &#10007; | &#10007; |
+|        Harfbuzz        |    2.7.2      | load("@third_party//:harfbuzz.bzl", "harfbuzz") | @harfbuzz//:harfbuzz  | &#10003; | &#10003; | &#10007; |
+|        ENet            |    1.3.17     | load("@third_party//:enet.bzl", "enet")         | @enet//:enet          | &#10003; | &#10003; | &#10007; |
+|        CURL            |    7.73.0     | load("@third_party//:curl.bzl", "curl")         | @curl//:curl          | &#10003; | &#10003; | &#10007; |
+|        BZIP2           |               | load("@third_party//:bzip.bzl", "bzl")          | @bzip//:bzip          | &#10003; | &#10007; | &#10007; |
+|        Irrlicht        |    1.8.4      | load("@third_party//:irrlicht.bzl", "irrlicht") | @irrlicht//:irrlicht  | &#10003; | &#10003; | &#10007; |
+|        Freetype        |    2.9.1      | load("@third_party//:freetype.bzl", "freetype") | @freetype//:freetype  | &#10003; | &#10003; | &#10007; |
+|         IConv          |    1.16       | load("@third_party//:iconv.bzl", "iconv")       | @iconv//:iconv        | &#10003; | &#10003; | &#10007; |
+|         PhysFS         |    3.0.2      | load("@third_party//:physfs.bzl", "physfs")     | @physfs//:physfs      | &#10003; | &#10003; | &#10007; |
+|         LZMA           |    5.2.5      | load("@third_party//:lzma.bzl", "lzma")         | @lzma//:lzma          | &#10003; | &#10003; | &#10007; |
+|         TIFF           |    4.1.0      | load("@third_party//:tiff.bzl", "tiff")         | @tiff//:tiff          | &#10003; | &#10003; | &#10007; |
+|         XML2           |               | load("@third_party//:xml2", "xml2")             | @xml2//:xml2          | &#10003; | &#10003; | &#10007; |
 
 ## Build Configurations
 
