@@ -103,6 +103,7 @@ cc_library(
     }),
 
     defines = [
+        "IRRLICHT_EXPORTS=1",
         "NO_IRR_COMPILE_WITH_ZIP_ENCRYPTION_"
     # Handle D3D8
     ] + select({
