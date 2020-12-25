@@ -7,7 +7,7 @@ def xml2():
         new_git_repository,
         name = "xml2",
         remote = "https://gitlab.gnome.org/GNOME/libxml2.git",
-
+        shallow_since = "1608131527 +0100",
         commit = "a67b63d183f5ab5d5af70fe47ef3a3d53fa3cb09",
         build_file_content = """
 load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
