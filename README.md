@@ -3,7 +3,16 @@
 ![CI](https://github.com/DraconicEnt/Third-Party/workflows/CI/badge.svg?branch=develop)
 
 Bazel resolved third party dependencies.
-The purpose of this repository is to provide bazel-native (or tuned rules_foreign_cc definitions) for various third party repositories.
+The purpose of this repository is to provide bazel-native (or tuned rules_foreign_cc definitions) for various third party repositories across Linux, Windows and MacOS.
+
+## Why?
+
+There is plenty of software that is generally useful that do not support the bazel build system. [rules_foreign_cc](https://github.com/bazelbuild/rules_foreign_cc)
+addresses this problem only partially right now (and possibly won't ever fully address the problem with certain classes of build system Ie. configure/build) in that
+it tends to have problems operating on platforms that aren't Linux. Sometimes it can be made to work, but sometimes assumptions are made about the build environment
+that do not work well in bazel causing build failures.
+
+Ultimately we want easy to access bazel libraries that work across at least Linux, Windows and MacOS.
 
 ## Support Matrix
 
