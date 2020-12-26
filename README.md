@@ -119,6 +119,31 @@ load("@third_party//libraries:zlib.bzl", "zlib")
 zlib()
 ```
 
+### Using other Versions of Software
+
+These rules are all defined using the maybe directive. This means you can load alternative versions of the software supported by this repository.
+For example, you can load ENet 1.3.10 (instead of the 1.3.17) using the following code:
+
+```starlark
+load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+maybe(
+    http_archive,
+    name = "enet",
+    urls = [
+        "https://github.com/lsalzman/enet/archive/v1.3.10.tar.gz"
+    ],
+    sha256 = "035f9b5cdc67b720a45952b77a28fdf054e93fd273df9dd7f6a3e13d60571069",
+    build_file = "@rules_third_party//libraries:enet.BUILD"
+)
+
+# You should still load and call the initialization function, though, so that all subdependencies are initialized
+# but only do this AFTER your declaration above.
+load("@third_party//:libraries/enet.bzl", "enet")
+enet()
+```
+
 ### Assumptions
 
 The following assumptions are made about your build environment:
