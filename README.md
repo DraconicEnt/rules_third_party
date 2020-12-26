@@ -118,3 +118,11 @@ load("@third_party//libraries:zlib.bzl", "zlib")
 
 zlib()
 ```
+
+### Assumptions
+
+The following assumptions are made about your build environment:
+
+* CMake is installed and in your PATH.
+* Ninja is installed and in your PATH.
+* Your build host is either Windows, Linux or MacOS.
