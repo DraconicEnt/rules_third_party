@@ -34,6 +34,8 @@ The following targets support the following platforms:
 |         TIFF           |    4.1.0      | load("@third_party//libraries:tiff.bzl", "tiff")         | @tiff//:tiff          | &#10003; | &#10003; | &#10007; |
 |         XML2           |               | load("@third_party//libraries:xml2", "xml2")             | @xml2//:xml2          | &#10003; | &#10003; | &#10007; |
 
+These rules work with the following bazel versions: 3.7.1, 3.7.0, 3.6.0, 3.5.1, 3.4.0, 3.3.0, 3.2.0, 3.1.0, 3.0.0
+
 ## Build Configurations
 
 Some items support configurations specified on the bazel command line. They are listed below.
