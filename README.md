@@ -109,3 +109,25 @@ load("@rules_third_party//:zlib.bzl", "zlib")
 
 zlib()
 ```
+
+### Change Software Version
+
+All software declared as supported by at least one platform should be setup with an independent BUILD file to allow for changing out software versions that are compatible
+with the BUILD file. An example of how to do this with ENet to load ENet v1.3.10 instead of of 1.3.17 is below.
+
+```starlark
+load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
+
+maybe(
+    http_archive,
+    name = "enet",
+    urls = [
+        "https://github.com/lsalzman/enet/archive/v1.3.10.tar.gz"
+    ],
+    sha256 = "035f9b5cdc67b720a45952b77a28fdf054e93fd273df9dd7f6a3e13d60571069",
+    build_file = "@rules_third_party//:enet.BUILD"
+)
+```
+
+This works because all software marked as supported are declared using the 'maybe' directive, allowing them to be overridden with alternative software versions. It is still recommended to call
+the initialization function for software you override (but only AFTER your override) to ensure that any subdependencies are loaded if there are any.

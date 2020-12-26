@@ -1,6 +1,21 @@
 load("//:graphviz.bzl", "run_graphviz")
 
-exports_files(["pnglibconf.h"])
+exports_files([
+    "pnglibconf.h",
+    "allegro.BUILD",
+    "bullet.BUILD",
+    "bzip2.BUILD",
+    "curl.BUILD",
+    "enet.BUILD",
+    "freetype.BUILD",
+    "graphviz.BUILD",
+    "harfbuzz.BUILD",
+    "iconv.BUILD",
+    "irrlicht.BUILD",
+    "jpeg.BUILD",
+    "lzma.BUILD",
+    "physfs.BUILD"
+])
 
 genquery(
     name = "irrlicht_dependencies_diagram",
