@@ -12,37 +12,53 @@
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-load("//applications:graphviz.bzl", "run_graphviz")
+load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-exports_files([
-    "pnglibconf.h",
-    "allegro.BUILD",
-    "bullet.BUILD",
-    "bzip2.BUILD",
-    "curl.BUILD",
-    "enet.BUILD",
-    "freetype.BUILD",
-    "graphviz.BUILD",
-    "harfbuzz.BUILD",
-    "iconv.BUILD",
-    "irrlicht.BUILD",
-    "jpeg.BUILD",
-    "lzma.BUILD",
-    "physfs.BUILD"
-])
+def tiff():
+    maybe(
+        http_archive,
+        name = "tiff",
+        url = "https://download.osgeo.org/libtiff/tiff-4.1.0.tar.gz",
+        sha256 = "5d29f32517dadb6dbcd1255ea5bbc93a2b54b94fbf83653b4d65c7d6775b8634",
+        build_file_content = """
+load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
 
-genquery(
-    name = "irrlicht_dependencies_diagram",
-    opts = [
-        "--output",
-        "graph"
+cmake_external(
+name = "tiff",
+lib_source = "@tiff//:tiff-4.1.0",
+
+shared_libraries = select({
+    "@bazel_tools//src/conditions:windows": [
+
     ],
-    expression = "deps(@irrlicht//:irrlicht)",
-    scope = ["@irrlicht//:irrlicht"],
-)
+    "//conditions:default": [
+        "libtiff.so"
+    ]
+}),
 
-run_graphviz(
-    name = "irrlicht_dependency_diagram_png",
-    input = ":irrlicht_dependencies_diagram",
-    output = "irrlicht_dependencies.png"
+static_libraries = select({
+    "@bazel_tools//src/conditions:windows": [
+        "tiff.lib"
+    ],
+    "//conditions:default": [
+
+    ]
+}),
+
+# Windows only
+generate_crosstool_file = True,
+cmake_options = ["-GNinja"],
+make_commands = [
+   "ninja",
+   "ninja install",
+   "ls",
+   "ls tiff",
+   "ls tiff/bin",
+   "ls tiff/lib"
+],
+
+visibility = ["//visibility:public"]
 )
+        """
+    )

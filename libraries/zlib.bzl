@@ -12,37 +12,14 @@
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-load("//applications:graphviz.bzl", "run_graphviz")
+load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-exports_files([
-    "pnglibconf.h",
-    "allegro.BUILD",
-    "bullet.BUILD",
-    "bzip2.BUILD",
-    "curl.BUILD",
-    "enet.BUILD",
-    "freetype.BUILD",
-    "graphviz.BUILD",
-    "harfbuzz.BUILD",
-    "iconv.BUILD",
-    "irrlicht.BUILD",
-    "jpeg.BUILD",
-    "lzma.BUILD",
-    "physfs.BUILD"
-])
-
-genquery(
-    name = "irrlicht_dependencies_diagram",
-    opts = [
-        "--output",
-        "graph"
-    ],
-    expression = "deps(@irrlicht//:irrlicht)",
-    scope = ["@irrlicht//:irrlicht"],
-)
-
-run_graphviz(
-    name = "irrlicht_dependency_diagram_png",
-    input = ":irrlicht_dependencies_diagram",
-    output = "irrlicht_dependencies.png"
-)
+def zlib():
+    maybe(
+        http_archive,
+        name = "zlib",
+        url = "https://zlib.net/zlib-1.2.11.tar.gz",
+        sha256 = "c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1",
+        build_file = "@rules_third_party//libraries:zlib.BUILD"
+    )

@@ -12,37 +12,48 @@
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-load("//applications:graphviz.bzl", "run_graphviz")
+load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
 
-exports_files([
-    "pnglibconf.h",
-    "allegro.BUILD",
-    "bullet.BUILD",
-    "bzip2.BUILD",
-    "curl.BUILD",
-    "enet.BUILD",
-    "freetype.BUILD",
-    "graphviz.BUILD",
-    "harfbuzz.BUILD",
-    "iconv.BUILD",
-    "irrlicht.BUILD",
-    "jpeg.BUILD",
-    "lzma.BUILD",
-    "physfs.BUILD"
-])
+cmake_external(
+    name = "curl",
+    lib_source = "@curl//:curl-7.73.0",
 
-genquery(
-    name = "irrlicht_dependencies_diagram",
-    opts = [
-        "--output",
-        "graph"
-    ],
-    expression = "deps(@irrlicht//:irrlicht)",
-    scope = ["@irrlicht//:irrlicht"],
-)
+    static_libraries = select({
+        "@bazel_tools//src/conditions:windows": [
+           "libcurl_imp.lib"
+        ],
 
-run_graphviz(
-    name = "irrlicht_dependency_diagram_png",
-    input = ":irrlicht_dependencies_diagram",
-    output = "irrlicht_dependencies.png"
+        # Linux
+        "//conditions:default": []
+    }),
+
+    shared_libraries = select({
+        "@bazel_tools//src/conditions:windows": [],
+
+        # Linux
+        "//conditions:default": ["libcurl.so"]
+    }),
+
+    generate_crosstool_file = select({
+        "@bazel_tools//src/conditions:windows": True,
+        "//conditions:default": False
+    }),
+
+    cmake_options = select({
+       "@bazel_tools//src/conditions:windows": ["-GNinja"],
+       "//conditions:default": None
+    }),
+
+    make_commands = select({
+       "@bazel_tools//src/conditions:windows": [
+           "ninja",
+           "ninja install"
+       ],
+       "//conditions:default": [
+           "make -j$(nproc)",
+           "make install"
+       ]
+    }),
+
+    visibility = ["//visibility:public"]
 )

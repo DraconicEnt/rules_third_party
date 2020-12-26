@@ -12,37 +12,16 @@
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-load("//applications:graphviz.bzl", "run_graphviz")
+load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
 
-exports_files([
-    "pnglibconf.h",
-    "allegro.BUILD",
-    "bullet.BUILD",
-    "bzip2.BUILD",
-    "curl.BUILD",
-    "enet.BUILD",
-    "freetype.BUILD",
-    "graphviz.BUILD",
-    "harfbuzz.BUILD",
-    "iconv.BUILD",
-    "irrlicht.BUILD",
-    "jpeg.BUILD",
-    "lzma.BUILD",
-    "physfs.BUILD"
-])
-
-genquery(
-    name = "irrlicht_dependencies_diagram",
-    opts = [
-        "--output",
-        "graph"
-    ],
-    expression = "deps(@irrlicht//:irrlicht)",
-    scope = ["@irrlicht//:irrlicht"],
-)
-
-run_graphviz(
-    name = "irrlicht_dependency_diagram_png",
-    input = ":irrlicht_dependencies_diagram",
-    output = "irrlicht_dependencies.png"
-)
+def harfbuzz():
+    maybe(
+        new_git_repository,
+        name = "harfbuzz",
+        remote = "https://github.com/harfbuzz/harfbuzz.git",
+        shallow_since = "1598654382 +0200",
+        # Tag 2.7.2
+        commit = "9c98b2b9a9e43669c5e2b37eaa41b1e07de1ede3",
+        build_file = "@rules_third_party//libraries:harfbuzz.BUILD"
+    )

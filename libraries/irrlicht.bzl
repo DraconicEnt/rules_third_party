@@ -12,37 +12,29 @@
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-load("//applications:graphviz.bzl", "run_graphviz")
+load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-exports_files([
-    "pnglibconf.h",
-    "allegro.BUILD",
-    "bullet.BUILD",
-    "bzip2.BUILD",
-    "curl.BUILD",
-    "enet.BUILD",
-    "freetype.BUILD",
-    "graphviz.BUILD",
-    "harfbuzz.BUILD",
-    "iconv.BUILD",
-    "irrlicht.BUILD",
-    "jpeg.BUILD",
-    "lzma.BUILD",
-    "physfs.BUILD"
-])
+# load("//libraries:png.bzl", "png")
+# load("//libraries:jpeg.bzl", "jpeg")
+# load("//libraries:bzip2.bzl", "bzip2")
 
-genquery(
-    name = "irrlicht_dependencies_diagram",
-    opts = [
-        "--output",
-        "graph"
-    ],
-    expression = "deps(@irrlicht//:irrlicht)",
-    scope = ["@irrlicht//:irrlicht"],
-)
+def irrlicht():
+    # Ensure dependencies are loaded.
+#    png()
+#    jpeg()
+#    bzip2()
 
-run_graphviz(
-    name = "irrlicht_dependency_diagram_png",
-    input = ":irrlicht_dependencies_diagram",
-    output = "irrlicht_dependencies.png"
-)
+    maybe(
+        http_archive,
+        name = "irrlicht",
+        patches = [
+            "@rules_third_party//libraries:COSOperator.patch"
+        ],
+        urls = [
+            "http://downloads.sourceforge.net/irrlicht/irrlicht-1.8.4.zip"
+        ],
+        sha256 = "f42b280bc608e545b820206fe2a999c55f290de5c7509a02bdbeeccc1bf9e433",
+
+        build_file = "@rules_third_party//libraries:irrlicht.BUILD"
+    )

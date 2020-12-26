@@ -18,21 +18,21 @@ Ultimately we want easy to access bazel libraries that work across at least Linu
 
 The following targets support the following platforms:
 
-| Library/Application    |    Versions   | Import                                          | Target                |  Linux?  | Windows? |   OSX?   |
-| ---------------------- | ------------- | ----------------------------------------------- | --------------------  | -------- | -------- | -------- |
-|        ZLib            |    1.2.11     | load("@third_party//:zlib.bzl", "zlib")         | @zlib//:zlib          | &#10003; | &#10003; | &#10007; |
-|        PNG             |    1.6.37     | load("@third_party//:png.bzl", "png")           | @png//:png            | &#10007; | &#10007; | &#10007; |
-|        Harfbuzz        |    2.7.2      | load("@third_party//:harfbuzz.bzl", "harfbuzz") | @harfbuzz//:harfbuzz  | &#10003; | &#10003; | &#10003; |
-|        ENet            |    1.3.17     | load("@third_party//:enet.bzl", "enet")         | @enet//:enet          | &#10003; | &#10003; | &#10003; |
-|        CURL            |    7.73.0     | load("@third_party//:curl.bzl", "curl")         | @curl//:curl          | &#10003; | &#10003; | &#10007; |
-|        BZIP2           |               | load("@third_party//:bzip.bzl", "bzl")          | @bzip//:bzip          | &#10003; | &#10007; | &#10007; |
-|        Irrlicht        |    1.8.4      | load("@third_party//:irrlicht.bzl", "irrlicht") | @irrlicht//:irrlicht  | &#10003; | &#10003; | &#10007; |
-|        Freetype        |    2.9.1      | load("@third_party//:freetype.bzl", "freetype") | @freetype//:freetype  | &#10003; | &#10003; | &#10007; |
-|         IConv          |    1.16       | load("@third_party//:iconv.bzl", "iconv")       | @iconv//:iconv        | &#10003; | &#10003; | &#10003; |
-|         PhysFS         |    3.0.2      | load("@third_party//:physfs.bzl", "physfs")     | @physfs//:physfs      | &#10003; | &#10003; | &#10007; |
-|         LZMA           |    5.2.5      | load("@third_party//:lzma.bzl", "lzma")         | @lzma//:lzma          | &#10003; | &#10003; | &#10003; |
-|         TIFF           |    4.1.0      | load("@third_party//:tiff.bzl", "tiff")         | @tiff//:tiff          | &#10003; | &#10003; | &#10007; |
-|         XML2           |               | load("@third_party//:xml2", "xml2")             | @xml2//:xml2          | &#10003; | &#10003; | &#10007; |
+| Library/Application    |    Versions   | Import                                                   | Target                |  Linux?  | Windows? |   OSX?   |
+| ---------------------- | ------------- | -------------------------------------------------------- | --------------------  | -------- | -------- | -------- |
+|        ZLib            |    1.2.11     | load("@third_party//libraries:zlib.bzl", "zlib")         | @zlib//:zlib          | &#10003; | &#10003; | &#10007; |
+|        PNG             |    1.6.37     | load("@third_party//libraries:png.bzl", "png")           | @png//:png            | &#10007; | &#10007; | &#10007; |
+|        Harfbuzz        |    2.7.2      | load("@third_party//libraries:harfbuzz.bzl", "harfbuzz") | @harfbuzz//:harfbuzz  | &#10003; | &#10003; | &#10003; |
+|        ENet            |    1.3.17     | load("@third_party//libraries:enet.bzl", "enet")         | @enet//:enet          | &#10003; | &#10003; | &#10003; |
+|        CURL            |    7.73.0     | load("@third_party//libraries:curl.bzl", "curl")         | @curl//:curl          | &#10003; | &#10003; | &#10007; |
+|        BZIP2           |               | load("@third_party//libraries:bzip.bzl", "bzl")          | @bzip//:bzip          | &#10003; | &#10007; | &#10007; |
+|        Irrlicht        |    1.8.4      | load("@third_party//libraries:irrlicht.bzl", "irrlicht") | @irrlicht//:irrlicht  | &#10003; | &#10003; | &#10007; |
+|        Freetype        |    2.9.1      | load("@third_party//libraries:freetype.bzl", "freetype") | @freetype//:freetype  | &#10003; | &#10003; | &#10007; |
+|         IConv          |    1.16       | load("@third_party//libraries:iconv.bzl", "iconv")       | @iconv//:iconv        | &#10003; | &#10003; | &#10003; |
+|         PhysFS         |    3.0.2      | load("@third_party//libraries:physfs.bzl", "physfs")     | @physfs//:physfs      | &#10003; | &#10003; | &#10007; |
+|         LZMA           |    5.2.5      | load("@third_party//libraries:lzma.bzl", "lzma")         | @lzma//:lzma          | &#10003; | &#10003; | &#10003; |
+|         TIFF           |    4.1.0      | load("@third_party//libraries:tiff.bzl", "tiff")         | @tiff//:tiff          | &#10003; | &#10003; | &#10007; |
+|         XML2           |               | load("@third_party//libraries:xml2", "xml2")             | @xml2//:xml2          | &#10003; | &#10003; | &#10007; |
 
 ## Build Configurations
 
@@ -105,8 +105,8 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 maybe(
     git_repository,
-    name = "third_party",
-    remote = "git@github.com:DraconicEnt/Third-Party.git",
+    name = "rules_third_party",
+    remote = "https://github.com/DraconicEnt/rules_third_party.git",
     commit = "512b473cb80586381f6c14102cc6c8b0f118e0f7" # Change to any commit ID you want
 )
 ```
@@ -114,7 +114,7 @@ maybe(
 To load and initialize a third party dependency (zlib here for example), also add the following to your WORKSPACE:
 
 ```starlark
-load("@third_party//:zlib.bzl", "zlib")
+load("@third_party//libraries:zlib.bzl", "zlib")
 
 zlib()
 ```

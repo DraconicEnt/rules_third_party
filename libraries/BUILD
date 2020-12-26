@@ -12,8 +12,6 @@
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-load("//applications:graphviz.bzl", "run_graphviz")
-
 exports_files([
     "pnglibconf.h",
     "allegro.BUILD",
@@ -22,27 +20,11 @@ exports_files([
     "curl.BUILD",
     "enet.BUILD",
     "freetype.BUILD",
-    "graphviz.BUILD",
     "harfbuzz.BUILD",
     "iconv.BUILD",
     "irrlicht.BUILD",
     "jpeg.BUILD",
     "lzma.BUILD",
-    "physfs.BUILD"
+    "physfs.BUILD",
+    "COSOperator.patch"
 ])
-
-genquery(
-    name = "irrlicht_dependencies_diagram",
-    opts = [
-        "--output",
-        "graph"
-    ],
-    expression = "deps(@irrlicht//:irrlicht)",
-    scope = ["@irrlicht//:irrlicht"],
-)
-
-run_graphviz(
-    name = "irrlicht_dependency_diagram_png",
-    input = ":irrlicht_dependencies_diagram",
-    output = "irrlicht_dependencies.png"
-)

@@ -12,37 +12,51 @@
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-load("//applications:graphviz.bzl", "run_graphviz")
+load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
 
-exports_files([
-    "pnglibconf.h",
-    "allegro.BUILD",
-    "bullet.BUILD",
-    "bzip2.BUILD",
-    "curl.BUILD",
-    "enet.BUILD",
-    "freetype.BUILD",
-    "graphviz.BUILD",
-    "harfbuzz.BUILD",
-    "iconv.BUILD",
-    "irrlicht.BUILD",
-    "jpeg.BUILD",
-    "lzma.BUILD",
-    "physfs.BUILD"
-])
-
-genquery(
-    name = "irrlicht_dependencies_diagram",
-    opts = [
-        "--output",
-        "graph"
-    ],
-    expression = "deps(@irrlicht//:irrlicht)",
-    scope = ["@irrlicht//:irrlicht"],
+filegroup(
+    name = "harfbuzz_files",
+    srcs = glob(
+        include=[
+            "**/*"
+    ])
 )
 
-run_graphviz(
-    name = "irrlicht_dependency_diagram_png",
-    input = ":irrlicht_dependencies_diagram",
-    output = "irrlicht_dependencies.png"
+cmake_external(
+    name = "harfbuzz",
+    lib_source = ":harfbuzz_files",
+
+    generate_crosstool_file = select({
+        "@bazel_tools//src/conditions:windows": True,
+        "//conditions:default": False
+    }),
+
+    cmake_options = select({
+       "@bazel_tools//src/conditions:windows": ["-GNinja"],
+       "//conditions:default": None
+    }),
+
+    make_commands = select({
+       "@bazel_tools//src/conditions:windows": [
+           "ninja",
+           "ninja install"
+       ],
+       "//conditions:default": [
+           "make -j$(nproc)",
+           "make install"
+       ]
+    }),
+
+    static_libraries = select({
+        "@bazel_tools//src/conditions:windows": [
+            "harfbuzz.lib"
+        ],
+
+        # Linux
+        "//conditions:default": [
+            "libharfbuzz.a"
+        ]
+    }),
+
+    visibility = ["//visibility:public"]
 )
