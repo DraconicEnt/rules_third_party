@@ -39,7 +39,9 @@ jobs:
 
             - name: Install MacOS Dependencies
               if: ${{ matrix.os == 'macos-11.0' || matrix.os == 'macos-10.15' }}
-              run: brew install openssl
+              run: |
+                brew install openssl
+                ln -s /usr/local/opt/openssl/include/openssl /usr/local/include
 
             # Should already be built from graphviz
             - name: Build Harfbuzz
