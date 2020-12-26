@@ -3,7 +3,16 @@
 ![CI](https://github.com/DraconicEnt/Third-Party/workflows/CI/badge.svg?branch=develop)
 
 Bazel resolved third party dependencies.
-The purpose of this repository is to provide bazel-native (or tuned rules_foreign_cc definitions) for various third party repositories.
+The purpose of this repository is to provide bazel-native (or tuned rules_foreign_cc definitions) for various third party repositories across Linux, Windows and MacOS.
+
+## Why?
+
+There is plenty of software that is generally useful that do not support the bazel build system. [rules_foreign_cc](https://github.com/bazelbuild/rules_foreign_cc)
+addresses this problem only partially right now (and possibly won't ever fully address the problem with certain classes of build system Ie. configure/build) in that
+it tends to have problems operating on platforms that aren't Linux. Sometimes it can be made to work, but sometimes assumptions are made about the build environment
+that do not work well in bazel causing build failures.
+
+Ultimately we want easy to access bazel libraries that work across at least Linux, Windows and MacOS.
 
 ## Support Matrix
 
@@ -96,7 +105,7 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 maybe(
     git_repository,
-    name = "rules_third_party",
+    name = "third_party",
     remote = "git@github.com:DraconicEnt/Third-Party.git",
     commit = "512b473cb80586381f6c14102cc6c8b0f118e0f7" # Change to any commit ID you want
 )
@@ -105,29 +114,7 @@ maybe(
 To load and initialize a third party dependency (zlib here for example), also add the following to your WORKSPACE:
 
 ```starlark
-load("@rules_third_party//:zlib.bzl", "zlib")
+load("@third_party//:zlib.bzl", "zlib")
 
 zlib()
 ```
-
-### Change Software Version
-
-All software declared as supported by at least one platform should be setup with an independent BUILD file to allow for changing out software versions that are compatible
-with the BUILD file. An example of how to do this with ENet to load ENet v1.3.10 instead of of 1.3.17 is below.
-
-```starlark
-load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
-
-maybe(
-    http_archive,
-    name = "enet",
-    urls = [
-        "https://github.com/lsalzman/enet/archive/v1.3.10.tar.gz"
-    ],
-    sha256 = "035f9b5cdc67b720a45952b77a28fdf054e93fd273df9dd7f6a3e13d60571069",
-    build_file = "@rules_third_party//:enet.BUILD"
-)
-```
-
-This works because all software marked as supported are declared using the 'maybe' directive, allowing them to be overridden with alternative software versions. It is still recommended to call
-the initialization function for software you override (but only AFTER your override) to ensure that any subdependencies are loaded if there are any.
