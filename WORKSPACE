@@ -28,7 +28,7 @@ load("//:bison.bzl", "bison")
 
 # FIXME: Is there a way to reference ie. COSOperator without having to do this in the local builds?
 local_repository(
-    name = "third_party",
+    name = "rules_third_party",
     path = "."
 )
 

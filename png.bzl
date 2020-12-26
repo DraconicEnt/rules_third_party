@@ -25,7 +25,7 @@ filegroup(
         # Private Headers
         "libpng-1.6.37/pngpriv.h",
 
-        "@third_party//:pnglibconf.h"
+        "@rules_third_party//:pnglibconf.h"
     ]
 )
 
@@ -60,7 +60,7 @@ cc_library(
     ],
     includes = [
         "libpng-1.6.37",
-        "@third_party//:"
+        "@rules_third_party//:"
     ],
     deps = [
         "@zlib//:zlib"
