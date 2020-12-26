@@ -1,22 +1,19 @@
-load("@rules_pkg//:pkg.bzl", "pkg_tar")
+load("//:graphviz.bzl", "run_graphviz")
 
-exports_files(["COSOperator.patch"])
+exports_files(["pnglibconf.h"])
 
-filegroup(
-    name = "mygui_tools",
-    srcs = [
-        "@mygui//:library"
+genquery(
+    name = "irrlicht_dependencies_diagram",
+    opts = [
+        "--output",
+        "graph"
     ],
-    visibility = ["//visibility:public"]
+    expression = "deps(@irrlicht//:irrlicht)",
+    scope = ["@irrlicht//:irrlicht"],
 )
 
-pkg_tar(
-    name = "mygui_tools_archive",
-    srcs = [
-        ":mygui_tools",
-        "@mygui//:mygui_tools_data"
-    ],
-    deps = [
-        "@mygui//:mygui_resources_archive"
-    ]
+run_graphviz(
+    name = "irrlicht_dependency_diagram_png",
+    input = ":irrlicht_dependencies_diagram",
+    output = "irrlicht_dependencies.png"
 )

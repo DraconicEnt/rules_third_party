@@ -5,7 +5,8 @@ def lzma():
     maybe(
         http_archive,
         name = "lzma",
-        url = "https://downloads.sourceforge.net/project/lzmautils/xz-5.2.5.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Flzmautils%2Ffiles%2Fxz-5.2.5.tar.gz%2Fdownload&ts=1608267662",
+        sha256 = "f6f4910fd033078738bd82bfba4f49219d03b17eb0794eb91efbae419f4aba10",
+        url = "https://iweb.dl.sourceforge.net/project/lzmautils/xz-5.2.5.tar.gz",
 
         build_file_content = """
 cc_library(
@@ -41,6 +42,8 @@ cc_library(
         "xz-5.2.5/src/liblzma/simple"
     ],
     defines = [
+        "HAVE_DECODER_X86",
+        "HAVE_DECODER_LZMA1",
         "HAVE_INTTYPES_H=1",
         "HAVE_STDINT_H=1",
         "HAVE_STDBOOL_H=1"

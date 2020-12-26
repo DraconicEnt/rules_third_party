@@ -1,0 +1,102 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run.
+on:
+    # Triggers the workflow on push or pull request events but only for the develop branch
+    push:
+        branches: [develop]
+    pull_request:
+        branches: [develop]
+
+    # Allows you to run this workflow manually from the Actions tab
+    workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+    # This workflow contains a single job called "build"
+    build:
+        strategy:
+            matrix:
+                os: [ windows-2019, ubuntu-18.04, ubuntu-20.04, macos-11.0, macos-10.15 ]
+
+        # The type of runner that the job will run on
+        runs-on: ${{ matrix.os }}
+
+        # Steps represent a sequence of tasks that will be executed as part of the job
+        steps:
+            # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+            - uses: actions/checkout@v2
+            - uses: seanmiddleditch/gha-setup-ninja@master
+
+            - name: actions-bazelisk
+              uses: suyash/actions-bazelisk@v1
+
+            - name: Install Ubuntu Dependencies
+              if: ${{ matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04' }}
+              run: sudo apt-get install -y libgl-dev libgl1-mesa-dev libx11-dev mesa-common-dev libglu1-mesa-dev libxxf86vm-dev libxcursor-dev libpango1.0-dev libpangocairo-1.0-0 libcairo2-dev
+
+            # Should already be built from graphviz
+            - name: Build Harfbuzz
+              run: |
+                bazel build @harfbuzz//:harfbuzz
+
+            - name: Build CURL
+              # FIXME: Requires OpenSSL on MacOS
+              if: ${{ matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04' || matrix.os == 'windows-2019' }}
+              run: |
+                bazel build @curl//:curl
+
+            # Should already be built from libpng
+            - name: Build ZLib
+              if: ${{ matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04' || matrix.os == 'windows-2019' }}
+              run: |
+                bazel build @zlib//:zlib
+
+            - name: Build ENet
+              run: |
+                bazel build @enet//:enet
+
+            - name: Build JPEG
+              if: ${{ matrix.os != 'windows-2019' && matrix.os != 'macos-11.0' && matrix.os != 'macos-10.15'  }}
+              run: |
+                bazel build @jpeg//:jpeg
+
+            - name: Build BZIP2
+              if: ${{ matrix.os != 'windows-2019' }}
+              run: |
+                bazel build @bzip2//:bzip2
+
+            - name: Build FreeType
+              if: ${{ matrix.os != 'macos-11.0' && matrix.os != 'macos-10.15' }}
+              run: |
+                bazel build @freetype//:freetype
+
+            - name: Build IConv
+              run: |
+                bazel build @iconv//:iconv
+
+            - name: Build PhysFS
+              if: ${{ matrix.os != 'macos-11.0' && matrix.os != 'macos-10.15'  }}
+              run: |
+                bazel build @physfs//:physfs
+
+            - name: Build LZMA
+              run: |
+                bazel build @lzma//:lzma
+
+            - name: Build TIFF
+              if: ${{ matrix.os != 'macos-11.0' && matrix.os != 'macos-10.15' }}
+              run: |
+                bazel build @tiff//:tiff
+
+            - name: Build XML2
+              if: ${{ matrix.os != 'macos-11.0' && matrix.os != 'macos-10.15' }}
+              run: |
+                bazel build @xml2//:xml2
+
+            - name: Build Irrlicht
+              if: ${{ matrix.os != 'macos-11.0' && matrix.os != 'macos-10.15' }}
+              run: |
+                bazel build @irrlicht//:irrlicht --define irrlicht_d3d8=disabled --define irrlicht_d3d9=disabled
