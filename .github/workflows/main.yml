@@ -49,6 +49,7 @@ jobs:
                 bazel build @harfbuzz//:harfbuzz
 
             - name: Build CURL
+              if: ${{ matrix.os != 'macos-10.15' }}
               run: |
                 bazel build @curl//:curl
 
