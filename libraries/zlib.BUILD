@@ -59,6 +59,15 @@ cc_library(
     includes = [
         "zlib-1.2.11"
     ],
+    copts = select({
+        "@bazel_tools//src/conditions:windows": [
+
+        ],
+
+        "//conditions:default": [
+            "-Wno-implicit-function-declaration"
+        ]
+    }),
 
     visibility = ["//visibility:public"]
 )

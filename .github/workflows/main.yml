@@ -45,7 +45,7 @@ jobs:
             - name: Install MacOS Dependencies
               if: ${{ matrix.os == 'macos-11.0' || matrix.os == 'macos-10.15' }}
               run: |
-                brew install openssl
+                brew install openssl irrlicht
                 ln -s /usr/local/opt/openssl/include/openssl /usr/local/include
                 ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/
 
@@ -53,57 +53,18 @@ jobs:
               run: |
                 echo ${{ matrix.bazel }} > .bazelversion
 
-            # Should already be built from graphviz
-            - name: Build Harfbuzz
-              run: |
-                bazel build @harfbuzz//:harfbuzz
-
             - name: Build CURL
               if: ${{ matrix.os != 'macos-11.0' && matrix.os != 'macos-10.15' }}
               run: |
                 bazel build @curl//:curl
 
-            # Should already be built from libpng
-            - name: Build ZLib
-              run: |
-                bazel build @zlib//:zlib
-
             - name: Build ENet
               run: |
                 bazel build @enet//:enet
 
-            - name: Build JPEG
-              if: ${{ matrix.os != 'windows-2019' && matrix.os != 'macos-11.0' && matrix.os != 'macos-10.15'  }}
+            - name: Build & Test PhysFS
               run: |
-                bazel build @jpeg//:jpeg
-
-            - name: Build BZIP2
-              run: |
-                bazel build @bzip2//:bzip2
-
-            - name: Build FreeType
-              run: |
-                bazel build @freetype//:freetype
-
-            - name: Build IConv
-              run: |
-                bazel build @iconv//:iconv
-
-            - name: Build PhysFS
-              run: |
-                bazel build @physfs//:physfs
-
-            - name: Build LZMA
-              run: |
-                bazel build @lzma//:lzma
-
-            - name: Build TIFF
-              run: |
-                bazel build @tiff//:tiff
-
-            - name: Build XML2
-              run: |
-                bazel build @xml2//:xml2
+                bazel test //tests:physfs
 
             - name: Build & Test Irrlicht
               run: |

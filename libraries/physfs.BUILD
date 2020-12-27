@@ -12,33 +12,51 @@
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-cc_library(
-    name = "physfs",
+load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
+
+filegroup(
+    name = "physfs_files",
     srcs = glob(
-        include = [
-            "physfs-3.0.2/src/*.c",
-            "physfs-3.0.2/src/*.h",
+        include=[
+            "physfs-3.0.2/**/*"
         ]
-    ),
-    defines = [
-        "PHYSFS_SUPPORTS_ZIP=1"
-    ],
-    hdrs = glob(
-        include = [
-            "physfs-3.0.2/src/*.h",
-        ]
-    ),
-    includes = [
-        "physfs-3.0.2/src"
-    ],
-    linkopts = select({
+))
+
+cmake_external(
+    name = "physfs",
+    lib_source = ":physfs_files",
+
+    generate_crosstool_file = select({
+        "@bazel_tools//src/conditions:windows": True,
+        "//conditions:default": False
+    }),
+
+    cmake_options = select({
+       "@bazel_tools//src/conditions:windows": ["-GNinja"],
+       "//conditions:default": None
+    }),
+
+    make_commands = select({
+       "@bazel_tools//src/conditions:windows": [
+           "ninja",
+           "ninja install"
+       ],
+       "//conditions:default": [
+           "make -j$(nproc)",
+           "make install"
+       ]
+    }),
+
+    static_libraries = select({
         "@bazel_tools//src/conditions:windows": [
-            "Advapi32.lib",
-            "User32.lib",
-            "Shell32.lib"
+            "physfs-static.lib"
         ],
 
-        "//conditions:default": []
+        # Linux
+        "//conditions:default": [
+            "libphysfs.a"
+        ]
     }),
+
     visibility = ["//visibility:public"]
 )

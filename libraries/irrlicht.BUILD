@@ -12,6 +12,9 @@
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
+load("@bazel_skylib//lib:selects.bzl", "selects")
+load("@rules_foreign_cc//tools/build_defs:make.bzl", "make")
+
 filegroup(
     name = "irrlicht_includes",
     srcs = glob(
@@ -60,94 +63,83 @@ config_setting(
     }
 )
 
-cc_library(
-    name = "irrlicht",
-    srcs = [
-        ":irrlicht_includes"
-    ] + glob(
-        include = [
-            "irrlicht-1.8.4/source/Irrlicht/*.c",
-            "irrlicht-1.8.4/source/Irrlicht/*.cpp",
-
-            # Use Irrlicht's built ins for now
-            #"irrlicht-1.8.4/source/Irrlicht/zlib/*.c",
-            "irrlicht-1.8.4/source/Irrlicht/lzma/*.c",
-            #"irrlicht-1.8.4/source/Irrlicht/bzip2/*.c",
-            #"irrlicht-1.8.4/source/Irrlicht/libpng/*.c",
-            #"irrlicht-1.8.4/source/Irrlicht/jpeg/*.c",
-        ],
-        exclude = [
-            "irrlicht-1.8.4/source/Irrlicht/zlib/**/*",
-            "irrlicht-1.8.4/source/Irrlicht/bzip2/**/*",
-            "irrlicht-1.8.4/source/Irrlicht/libpng/**/*",
-            "irrlicht-1.8.4/source/Irrlicht/jpeglib/**/*",
-            "irrlicht-1.8.4/source/Irrlicht/MacOSX/**/*"
+filegroup(
+    name = "irrlicht_files",
+    srcs = glob(
+        include=[
+            "irrlicht-1.8.4/**/*"
         ]
-    ),
-    copts = select({
-       "@bazel_tools//src/conditions:windows": [
+    )
+)
 
-       ],
-       "//conditions:default": [
-            "-std=gnu++11"
-        ],
-    }),
-
-    defines = [
-        "IRRLICHT_EXPORTS=1",
-        "NO_IRR_COMPILE_WITH_ZIP_ENCRYPTION_"
-    # Handle D3D8
-    ] + select({
-         "//conditions:default": [],
-        ":no_renderer_direct3d8": ["NO_IRR_COMPILE_WITH_DIRECT3D_8_"]
+irrlicht_defines = select({
+    "//conditions:default": [],
+    ":no_renderer_direct3d8": ["export NO_IRR_COMPILE_WITH_DIRECT3D_8_=1"]
     # Handle D3D9
     }) + select({
         "//conditions:default": [],
-        ":no_renderer_direct3d9": ["NO_IRR_COMPILE_WITH_DIRECT3D_9_"]
+        ":no_renderer_direct3d9": ["export NO_IRR_COMPILE_WITH_DIRECT3D_9_=1"]
     # Handle OpenGL
     }) + select({
         "//conditions:default": [],
-        ":no_renderer_opengl": ["NO_IRR_COMPILE_WITH_OPENGL_"]
+        ":no_renderer_opengl": ["export NO_IRR_COMPILE_WITH_OPENGL_=1"]
     # Handle software
     }) + select({
         "//conditions:default": [],
-        ":no_renderer_software": ["NO_IRR_COMPILE_WITH_SOFTWARE_"]
+        ":no_renderer_software": ["export NO_IRR_COMPILE_WITH_SOFTWARE_=1"]
     # Handle burnings
     }) + select({
         "//conditions:default": [],
-        ":no_renderer_burnings": ["NO_IRR_COMPILE_WITH_BURNINGSVIDEO_"]
-    # Platform specific defines
-    }) + select({
-        "@bazel_tools//src/conditions:windows": [
-            "_WIN64",
-            "WIN64",
-            "_WINDOWS",
-            "_MBCS",
-            "_USRDLL"
-        ],
-        "//conditions:default": [
+        ":no_renderer_burnings": ["export NO_IRR_COMPILE_WITH_BURNINGSVIDEO_=1"]
+    }
+)
 
-        ]
+make_command = select({
+    "//conditions:default": [
+        "pushd source/Irrlicht",
+        "make -j$(nproc)"
+    ],
+
+    "@bazel_tools//src/conditions:darwin": [
+        "pushd source/Irrlicht/MacOSX",
+        # xcodebuild fails - if it does work where does it end up at?
+        "xcodebuild",
+    ]
+})
+
+collect_command = select({
+    "//conditions:default": [
+        # Make install doesn't work so we install it ourselves
+        "mkdir -p $INSTALLDIR/lib",
+        "mkdir -p $INSTALLDIR/include",
+        "cp lib/Linux/libIrrlicht.a $INSTALLDIR/lib",
+        "cp include/*.h $INSTALLDIR/include",
+    ],
+
+    "@bazel_tools//src/conditions:windows": [
+        # Make install doesn't work so we install it ourselves
+        "mkdir -p $INSTALLDIR/lib",
+        "mkdir -p $INSTALLDIR/include",
+        "cp lib/Win64-visualStudio/libIrrlicht.lib $INSTALLDIR/lib",
+        "cp include/*.h $INSTALLDIR/include",
+    ],
+
+    "@bazel_tools//src/conditions:darwin": [
+
+    ]
+})
+
+make(
+    name = "irrlicht",
+    lib_source = ":irrlicht_files",
+
+    static_libraries = select({
+        "@bazel_tools//src/conditions:windows": ["libIrrlicht.lib"],
+        "//conditions:default": ["libIrrlicht.a"]
     }),
 
-    hdrs = [
-        ":irrlicht_includes"
-    ],
-    deps = [
-        "@png//:png",
-        "@jpeg//:jpeg",
-        "@bzip2//:bzip2",
-        # "@lzma//:lzma"
-    ],
-    linkopts = [
-        "-lGL",
-        "-lXxf86vm",
-        "-lX11"
-    ],
-
-    includes = [
-        "irrlicht-1.8.4/include",
-        "irrlicht-1.8.4/source/Irrlicht"
-    ],
+    make_commands = irrlicht_defines + make_command + [
+        "popd",
+    ] + collect_command,
     visibility = ["//visibility:public"]
 )
