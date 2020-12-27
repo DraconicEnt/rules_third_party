@@ -46,3 +46,28 @@ cc_test(
         ],
     })
 )
+
+cc_test(
+    name = "enet",
+    srcs = [
+        "enet.cpp"
+    ],
+    deps = [
+        "@enet//:enet"
+    ],
+    linkopts =  select({
+        "@bazel_tools//src/conditions:windows": [
+            "User32.lib",
+            "Advapi32.lib",
+            "Shell32.lib"
+        ],
+        "@bazel_tools//src/conditions:darwin": [
+            "-framework", "Foundation",
+            "-framework", "AppKit",
+            "-framework", "IOKit"
+        ],
+        "//conditions:default": [
+
+        ],
+    })
+)

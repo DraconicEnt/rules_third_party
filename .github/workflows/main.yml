@@ -58,9 +58,9 @@ jobs:
               run: |
                 bazel build @curl//:curl
 
-            - name: Build ENet
+            - name: Build & Test ENet
               run: |
-                bazel build @enet//:enet
+                bazel test //tests:enet
 
             - name: Build & Test PhysFS
               run: |
