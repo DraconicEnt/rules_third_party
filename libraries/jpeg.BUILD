@@ -20,12 +20,14 @@ filegroup(
         ]
     )
 )
+
+# NOTE: Prefixing with : breaks Windows builds
 cc_library(
     name = "jpeg",
     srcs = glob(
         include = [
             "jpeg-6b/*.c",
-            ":jpeg_headers"
+            "jpeg_headers"
         ],
         exclude = [
             "jpeg-6b/*mac*",
@@ -43,7 +45,7 @@ cc_library(
         ]
     ),
     hdrs = [
-        ":jpeg_headers"
+        "jpeg_headers"
     ],
     includes = [
         "jpeg-6b"
