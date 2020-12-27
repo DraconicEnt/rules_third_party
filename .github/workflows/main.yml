@@ -53,11 +53,6 @@ jobs:
               run: |
                 echo ${{ matrix.bazel }} > .bazelversion
 
-            - name: Build CURL
-              if: ${{ matrix.os != 'macos-11.0' && matrix.os != 'macos-10.15' }}
-              run: |
-                bazel build @curl//:curl
-
             - name: Build & Test ENet
               run: |
                 bazel test //tests:enet
