@@ -39,9 +39,11 @@ jobs:
               uses: suyash/actions-bazelisk@v1
 
             - name: Install Ubuntu Dependencies
+              if: ${{ matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04' }}
               run: sudo apt-get install -y libgl-dev libgl1-mesa-dev libx11-dev mesa-common-dev libglu1-mesa-dev libxxf86vm-dev libxcursor-dev libpango1.0-dev libpangocairo-1.0-0 libcairo2-dev
 
             - name: Install MacOS Dependencies
+              if: ${{ matrix.os == 'macos-11.0' || matrix.os == 'macos-10.15' }}
               run: |
                 brew install openssl
                 ln -s /usr/local/opt/openssl/include/openssl /usr/local/include
@@ -53,56 +55,69 @@ jobs:
 
             # Should already be built from graphviz
             - name: Build Harfbuzz
+              continue-on-error: true
               run: |
                 bazel build @harfbuzz//:harfbuzz
 
             - name: Build CURL
               if: ${{ matrix.os != 'macos-11.0' && matrix.os != 'macos-10.15' }}
+              continue-on-error: true
               run: |
                 bazel build @curl//:curl
 
             # Should already be built from libpng
             - name: Build ZLib
+              continue-on-error: true
               run: |
                 bazel build @zlib//:zlib
 
             - name: Build ENet
+              continue-on-error: true
               run: |
                 bazel build @enet//:enet
 
             - name: Build JPEG
+              continue-on-error: true
               if: ${{ matrix.os != 'windows-2019' && matrix.os != 'macos-11.0' && matrix.os != 'macos-10.15'  }}
               run: |
                 bazel build @jpeg//:jpeg
 
             - name: Build BZIP2
+              continue-on-error: true
               run: |
                 bazel build @bzip2//:bzip2
 
             - name: Build FreeType
+              continue-on-error: true
               run: |
                 bazel build @freetype//:freetype
 
             - name: Build IConv
+              continue-on-error: true
               run: |
                 bazel build @iconv//:iconv
 
             - name: Build PhysFS
+              continue-on-error: true
               run: |
                 bazel build @physfs//:physfs
 
             - name: Build LZMA
+              continue-on-error: true
               run: |
                 bazel build @lzma//:lzma
 
             - name: Build TIFF
+              continue-on-error: true
               run: |
                 bazel build @tiff//:tiff
 
             - name: Build XML2
+              continue-on-error: true
               run: |
                 bazel build @xml2//:xml2
 
             - name: Build & Test Irrlicht
+              continue-on-error: true
               run: |
                 bazel test //tests:irrlicht --define irrlicht_d3d8=disabled --define irrlicht_d3d9=disabled
