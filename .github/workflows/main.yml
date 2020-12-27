@@ -110,7 +110,7 @@ jobs:
               run: |
                 bazel build @xml2//:xml2
 
-            - name: Build Irrlicht
+            - name: Build & Test Irrlicht
               if: ${{ matrix.os != 'macos-11.0' && matrix.os != 'macos-10.15' }}
               run: |
-                bazel build @irrlicht//:irrlicht --define irrlicht_d3d8=disabled --define irrlicht_d3d9=disabled
+                bazel test //tests:irrlicht --define irrlicht_d3d8=disabled --define irrlicht_d3d9=disabled
