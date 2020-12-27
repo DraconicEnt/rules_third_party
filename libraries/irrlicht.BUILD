@@ -19,7 +19,7 @@ filegroup(
             "irrlicht-1.8.4/include/**/*.h",
             "irrlicht-1.8.4/include/**/*.hpp",
             "irrlicht-1.8.4/source/Irrlicht/**/*.h",
-            "irrlicht-1.8.4/source/Irrlicht/**/*.hpp",
+            "irrlicht-1.8.4/source/Irrlicht/**/*.hpp"
         ]
     )
 )
@@ -69,15 +69,18 @@ cc_library(
             "irrlicht-1.8.4/source/Irrlicht/*.c",
             "irrlicht-1.8.4/source/Irrlicht/*.cpp",
 
-            # Use Irrlicht's LZMA for now
+            # Use Irrlicht's built ins for now
+            #"irrlicht-1.8.4/source/Irrlicht/zlib/*.c",
             "irrlicht-1.8.4/source/Irrlicht/lzma/*.c",
+            #"irrlicht-1.8.4/source/Irrlicht/bzip2/*.c",
+            #"irrlicht-1.8.4/source/Irrlicht/libpng/*.c",
+            #"irrlicht-1.8.4/source/Irrlicht/jpeg/*.c",
         ],
         exclude = [
             "irrlicht-1.8.4/source/Irrlicht/zlib/**/*",
-            # "irrlicht-1.8.4/source/Irrlicht/bzip2/**/*",
-            # "irrlicht-1.8.4/source/Irrlicht/libpng/**/*",
-
-            # "irrlicht-1.8.4/source/Irrlicht/jpeglib/**/*",
+            "irrlicht-1.8.4/source/Irrlicht/bzip2/**/*",
+            "irrlicht-1.8.4/source/Irrlicht/libpng/**/*",
+            "irrlicht-1.8.4/source/Irrlicht/jpeglib/**/*",
             "irrlicht-1.8.4/source/Irrlicht/MacOSX/**/*"
         ]
     ),
@@ -131,9 +134,10 @@ cc_library(
         ":irrlicht_includes"
     ],
     deps = [
-        # "@png//:png",
-        # "@jpeg//:jpeg",
-        # "@bzip2//:bzip2"
+        "@png//:png",
+        "@jpeg//:jpeg",
+        "@bzip2//:bzip2",
+        # "@lzma//:lzma"
     ],
     linkopts = [
         "-lGL",

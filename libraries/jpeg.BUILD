@@ -38,7 +38,8 @@ cc_library(
             "jpeg-6b/jmemnobs.c",
             "jpeg-6b/ckconfi.c",
             "jpeg-6b/ansi2knr.c",
-            "jpeg-6b/djpeg.c"
+            "jpeg-6b/djpeg.c",
+            "jpeg-6b/example.c"
         ]
     ),
     hdrs = [
