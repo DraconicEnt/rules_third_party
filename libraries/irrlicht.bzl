@@ -23,6 +23,7 @@ load("//libraries:bzip2.bzl", "bzip2")
 select_irrlicht = select({
     # By default we try to build irrlicht
     "//conditions:default": ["@irrlicht//:irrlicht"],
+    "@bazel_tools//src/conditions:windows": ["@irrlicht//:irrlicht_prebuilt"],
     "@bazel_tools//src/conditions:darwin": ["@irrlicht_macos_brew//:irrlicht"]
 })
 

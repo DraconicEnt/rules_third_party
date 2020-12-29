@@ -97,7 +97,7 @@ irrlicht_defines = select({
 make_command = select({
     "//conditions:default": [
         "pushd source/Irrlicht",
-        "make -j$(nproc)"
+        "make -j$(nproc)",
     ],
 
     "@bazel_tools//src/conditions:darwin": [
@@ -131,15 +131,48 @@ collect_command = select({
 
 make(
     name = "irrlicht",
-    lib_source = ":irrlicht_files",
+    lib_source = "irrlicht_files",
 
     static_libraries = select({
         "@bazel_tools//src/conditions:windows": ["libIrrlicht.lib"],
         "//conditions:default": ["libIrrlicht.a"]
     }),
-
     make_commands = irrlicht_defines + make_command + [
         "popd",
     ] + collect_command,
     visibility = ["//visibility:public"]
+)
+
+cc_library(
+    name = "irrlicht_headers",
+
+    hdrs = glob(["irrlicht-1.8.4/include/irrlicht/*.h"]),
+    includes = ["irrlicht-1.8.4/include"],
+    visibility = ["//visibility:public"],
+)
+
+
+cc_import(
+    name = "irrlicht_dll",
+    alwayslink = True,
+    shared_library = "irrlicht-1.8.4/bin/Win64-visualStudio/Irrlicht.dll",
+    visibility = ["//visibility:public"]
+)
+
+
+cc_import(
+    name = "irrlicht_lib",
+    alwayslink = True,
+    static_library = "irrlicht-1.8.4/lib/Win64-visualStudio/Irrlicht.lib",
+    visibility = ["//visibility:public"]
+)
+
+cc_library(
+    name = "irrlicht_prebuilt",
+    deps = [
+         "irrlicht_headers",
+         "irrlicht_lib",
+         "irrlicht_dll"
+    ],
+    visibility = ["//visibility:public"],
 )
