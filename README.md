@@ -14,79 +14,6 @@ that do not work well in bazel causing build failures.
 
 Ultimately we want easy to access bazel libraries that work across at least Linux, Windows and MacOS.
 
-## Support Matrix
-
-The following targets support the following platforms:
-
-| Library/Application    |    Versions   | Import                                                   | Target                |  Linux?  | Windows? |   OSX?   |
-| ---------------------- | ------------- | -------------------------------------------------------- | --------------------  | -------- | -------- | -------- |
-|        ENet            |    1.3.17     | load("@third_party//libraries:enet.bzl", "enet")         | @enet//:enet          | &#10003; | &#10003; | &#10003; |
-|        Irrlicht        |    1.8.4      | load("@third_party//libraries:irrlicht.bzl", "irrlicht") | @irrlicht//:irrlicht  | &#10003; | &#10007; | &#10003; |
-|         PhysFS         |    3.0.2      | load("@third_party//libraries:physfs.bzl", "physfs")     | @physfs//:physfs      | &#10003; | &#10003; | &#10003; |
-
-These rules work with the following bazel versions: 3.7.1, 3.7.0, 3.6.0, 3.5.1, 3.4.0, 3.3.0, 3.2.0, 3.1.0, 3.0.0
-
-## Build Configurations
-
-Some items support configurations specified on the bazel command line. They are listed below.
-
-### Irrlicht
-
-#### irrlicht_d3d8
-
-Used to request that D3D8 support is not compiled. May be used by:
-
-```bash
-bazel build @irrlicht//:irrlicht --define irrlicht_d3d8=disabled
-```
-
-If set to disabled, ```NO_IRR_COMPILE_WITH_DIRECT3D_8_``` is passed as a define when compiling. If not specified,
-Irrlicht default behavior is used.
-
-#### irrlicht_d3d9
-
-Used to request that D3D9 support is not compiled. May be used by:
-
-```bash
-bazel build @irrlicht//:irrlicht --define irrlicht_d3d9=disabled
-```
-
-If set to disabled, ```NO_IRR_COMPILE_WITH_DIRECT3D_9_``` is passed as a define when compiling. If not specified,
-Irrlicht default behavior is used.
-
-#### irrlicht_opengl
-
-Used to request that OpenGL support is not compiled. May be used by:
-
-```bash
-bazel build @irrlicht//:irrlicht --define irrlicht_opengl=disabled
-```
-
-If set to disabled, ```NO_IRR_COMPILE_WITH_OPENGL_``` is passed as a define when compiling. If not specified,
-Irrlicht default behavior is used.
-
-#### irrlicht_software
-
-Used to request that software render support is not compiled. May be used by:
-
-```bash
-bazel build @irrlicht//:irrlicht --define irrlicht_software=disabled
-```
-
-If set to disabled, ```NO_IRR_COMPILE_WITH_SOFTWARE_``` is passed as a define when compiling. If not specified,
-Irrlicht default behavior is used.
-
-#### irrlicht_burnings
-
-Used to request that burnings video render support is not compiled. May be used by:
-
-```bash
-bazel build @irrlicht//:irrlicht --define irrlicht_burnings=disabled
-```
-
-If set to disabled, ```NO_IRR_COMPILE_WITH_BURNINGSVIDEO_``` is passed as a define when compiling. If not specified,
-Irrlicht default behavior is used.
-
 ## Usage
 
 Add the following to your WORKSPACE file:
@@ -110,6 +37,8 @@ load("@third_party//libraries:zlib.bzl", "zlib")
 
 zlib()
 ```
+
+For more information about supported libraries and their associated documentation, see [the wiki](https://github.com/DraconicEnt/rules_third_party/wiki).
 
 ### Using other Versions of Software
 
