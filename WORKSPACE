@@ -50,7 +50,8 @@ maybe(
     http_archive,
     name = "rules_foreign_cc",
     strip_prefix = "rules_foreign_cc-master",
-    sha256 = "3e6b0691fc57db8217d535393dcc2cf7c1d39fc87e9adb6e7d7bab1483915110",
+    # FIXME: Ideally this is locked to a specific version
+    #sha256 = "3e6b0691fc57db8217d535393dcc2cf7c1d39fc87e9adb6e7d7bab1483915110",
     url = "https://github.com/bazelbuild/rules_foreign_cc/archive/master.zip",
 )
 load("@rules_foreign_cc//:workspace_definitions.bzl", "rules_foreign_cc_dependencies")
