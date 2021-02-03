@@ -59,6 +59,7 @@ rules_foreign_cc_dependencies()
 
 # Initialize libraries
 enet()
+allegro()
 irrlicht()
 lzma()
 bzip2()
