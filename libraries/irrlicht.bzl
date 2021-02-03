@@ -15,15 +15,30 @@
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-# load("//libraries:png.bzl", "png")
-# load("//libraries:jpeg.bzl", "jpeg")
-# load("//libraries:bzip2.bzl", "bzip2")
+load("//libraries:png.bzl", "png")
+load("//libraries:jpeg.bzl", "jpeg")
+load("//libraries:bzip2.bzl", "bzip2")
+
+# Currently Irrlicht on MacOS does not seem to build in a scripted fashion so we resort to using a brew provided one
+select_irrlicht = select({
+    # By default we try to build irrlicht
+    "//conditions:default": ["@irrlicht//:irrlicht"],
+    "@bazel_tools//src/conditions:windows": ["@irrlicht//:irrlicht_prebuilt"],
+    "@bazel_tools//src/conditions:darwin": ["@irrlicht_macos_brew//:irrlicht"]
+})
 
 def irrlicht():
     # Ensure dependencies are loaded.
-#    png()
-#    jpeg()
-#    bzip2()
+    png()
+    jpeg()
+    bzip2()
+
+    maybe(
+        native.new_local_repository,
+        name = "irrlicht_macos_brew",
+        path = "/usr/local/Cellar/irrlicht/1.8.4",
+        build_file = "@rules_third_party//libraries:irrlichtLocalMacOS.BUILD"
+    )
 
     maybe(
         http_archive,

@@ -25,7 +25,9 @@ cc_library(
     name = "bzip2",
     srcs = glob(
         include = [
-            ":bzip2_headers",
+            # NOTE: Prefixing with : here causes build failure on windows?
+            "bzip2_headers",
+
             "blocksort.c",
             "huffman.c",
             "crctable.c",
