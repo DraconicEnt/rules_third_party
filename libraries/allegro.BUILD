@@ -14,9 +14,18 @@
 
 load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
 
+filegroup(
+    name = "allegro_sources",
+    srcs = glob(
+        include = [
+            "**/*"
+        ]
+    )
+)
+
 cmake_external(
     name = "allegro",
-    lib_source = "@allegro//:.",
+    lib_source = ":allegro_sources",
 
     generate_crosstool_file = select({
         "@bazel_tools//src/conditions:windows": True,

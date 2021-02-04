@@ -27,9 +27,18 @@ def osg():
         build_file_content = """
 load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
 
+filegroup(
+    name = "osg_sources",
+    srcs = glob(
+        include = [
+            "**/*"
+        ]
+    )
+)
+
 cmake_external(
 name = "osg",
-lib_source = "@osg//:.",
+lib_source = ":osg_sources",
 
 # DCMTK_DIR
 cache_entries = select({

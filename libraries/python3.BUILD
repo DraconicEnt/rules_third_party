@@ -12,57 +12,42 @@
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
+load("@rules_foreign_cc//tools/build_defs:configure.bzl", "configure_make")
 
 filegroup(
-    name = "curl_sources",
+    name = "python3_files",
     srcs = glob(
-        include = [
-            "curl-7.73.0/**/*"
+        include=[
+            "Python-3.9.1/**/*"
         ]
-    )
-)
+))
 
-cmake_external(
-    name = "curl",
-    lib_source = ":curl_sources",
+configure_make(
+    name = "python3",
+    lib_source = ":python3_files",
+
+    make_commands = [
+        "make -j$(nproc)",
+        "make install"
+    ],
 
     static_libraries = select({
         "@bazel_tools//src/conditions:windows": [
-           "libcurl_imp.lib"
+            "python3.9.lib"
         ],
 
         # Linux
-        "//conditions:default": []
+        "//conditions:default": [
+            "libpython3.9.a"
+        ]
     }),
 
-    shared_libraries = select({
-        "@bazel_tools//src/conditions:windows": [],
-
-        # Linux
-        "//conditions:default": ["libcurl.so"]
-    }),
-
-    generate_crosstool_file = select({
-        "@bazel_tools//src/conditions:windows": True,
-        "//conditions:default": False
-    }),
-
-    cmake_options = select({
-       "@bazel_tools//src/conditions:windows": ["-GNinja"],
-       "//conditions:default": None
-    }),
-
-    make_commands = select({
-       "@bazel_tools//src/conditions:windows": [
-           "ninja",
-           "ninja install"
-       ],
-       "//conditions:default": [
-           "make -j$(nproc)",
-           "make install"
-       ]
-    }),
+    configure_options = [
+        # Python doesn't do quotations quite as intended, this will force macro redacted to expand to "redacted" in cases where this happens.
+        "CFLAGS='-Dredacted=\"redacted\" -fPIC'",
+        "CXXFLAGS='-Dredacted=\"redacted\" -fPIC'",
+        "LDFLAGS='-fPIC'"
+    ],
 
     visibility = ["//visibility:public"]
 )

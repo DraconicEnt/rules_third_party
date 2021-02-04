@@ -12,56 +12,34 @@
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
+load("@rules_foreign_cc//tools/build_defs:make.bzl", "make")
 
 filegroup(
-    name = "curl_sources",
+    name = "lua_files",
     srcs = glob(
-        include = [
-            "curl-7.73.0/**/*"
+        include=[
+            "lua-5.4.2/**/*"
         ]
-    )
-)
+))
 
-cmake_external(
-    name = "curl",
-    lib_source = ":curl_sources",
+make(
+    name = "lua",
+    lib_source = ":lua_files",
+
+    make_commands = [
+        "make -j$(nproc)",
+        "make install INSTALL_TOP=$INSTALLDIR"
+    ],
 
     static_libraries = select({
         "@bazel_tools//src/conditions:windows": [
-           "libcurl_imp.lib"
+            "lua.lib"
         ],
 
         # Linux
-        "//conditions:default": []
-    }),
-
-    shared_libraries = select({
-        "@bazel_tools//src/conditions:windows": [],
-
-        # Linux
-        "//conditions:default": ["libcurl.so"]
-    }),
-
-    generate_crosstool_file = select({
-        "@bazel_tools//src/conditions:windows": True,
-        "//conditions:default": False
-    }),
-
-    cmake_options = select({
-       "@bazel_tools//src/conditions:windows": ["-GNinja"],
-       "//conditions:default": None
-    }),
-
-    make_commands = select({
-       "@bazel_tools//src/conditions:windows": [
-           "ninja",
-           "ninja install"
-       ],
-       "//conditions:default": [
-           "make -j$(nproc)",
-           "make install"
-       ]
+        "//conditions:default": [
+            "liblua.a"
+        ]
     }),
 
     visibility = ["//visibility:public"]
