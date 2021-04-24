@@ -51,12 +51,13 @@ local_repository(
 maybe(
     http_archive,
     name = "rules_foreign_cc",
-    strip_prefix = "rules_foreign_cc-master",
+    strip_prefix = "rules_foreign_cc-main",
     # FIXME: Ideally this is locked to a specific version
     #sha256 = "3e6b0691fc57db8217d535393dcc2cf7c1d39fc87e9adb6e7d7bab1483915110",
-    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/master.zip",
+    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/main.zip",
 )
-load("@rules_foreign_cc//:workspace_definitions.bzl", "rules_foreign_cc_dependencies")
+
+load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
 rules_foreign_cc_dependencies()
 
 # Initialize libraries

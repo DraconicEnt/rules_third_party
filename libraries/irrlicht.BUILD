@@ -13,7 +13,7 @@
 """
 
 load("@bazel_skylib//lib:selects.bzl", "selects")
-load("@rules_foreign_cc//tools/build_defs:make.bzl", "make")
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "make")
 
 filegroup(
     name = "irrlicht_includes",
@@ -23,6 +23,40 @@ filegroup(
             "irrlicht-1.8.4/include/**/*.hpp",
             "irrlicht-1.8.4/source/Irrlicht/**/*.h",
             "irrlicht-1.8.4/source/Irrlicht/**/*.hpp"
+        ]
+    )
+)
+
+filegroup(
+    name = "irrlicht_sources",
+    srcs = glob(
+        include = [
+            "irrlicht-1.8.4/source/Irrlicht/**/*.c",
+            "irrlicht-1.8.4/source/Irrlicht/**/*.cpp"
+        ],
+        # Ignore files we don't want
+        exclude = [
+            "irrlicht-1.8.4/source/Irrlicht/bzip2/dlltest.c",
+            "irrlicht-1.8.4/source/Irrlicht/bzip2/bzip2.c",
+            "irrlicht-1.8.4/source/Irrlicht/bzip2/unzcrash.c",
+            "irrlicht-1.8.4/source/Irrlicht/bzip2/mk251.c",
+            "irrlicht-1.8.4/source/Irrlicht/bzip2/spewG.c",
+            "irrlicht-1.8.4/source/Irrlicht/bzip2/bzip2recover.c",
+
+            "irrlicht-1.8.4/source/Irrlicht/libpng/pngtest.c",
+
+            "irrlicht-1.8.4/source/Irrlicht/jpeglib/example.c",
+            "irrlicht-1.8.4/source/Irrlicht/jpeglib/jpegtran.c",
+            "irrlicht-1.8.4/source/Irrlicht/jpeglib/djpeg.c",
+            "irrlicht-1.8.4/source/Irrlicht/jpeglib/cjpeg.c",
+            "irrlicht-1.8.4/source/Irrlicht/jpeglib/jmemansi.c",
+            "irrlicht-1.8.4/source/Irrlicht/jpeglib/jmemname.c",
+            "irrlicht-1.8.4/source/Irrlicht/jpeglib/jmemmac.c",
+            "irrlicht-1.8.4/source/Irrlicht/jpeglib/jmemdos.c",
+            "irrlicht-1.8.4/source/Irrlicht/jpeglib/wrjpgcom.c",
+            "irrlicht-1.8.4/source/Irrlicht/jpeglib/rdjpgcom.c",
+            "irrlicht-1.8.4/source/Irrlicht/jpeglib/cdjpeg.c",
+            "irrlicht-1.8.4/source/Irrlicht/jpeglib/ansi2knr.c",
         ]
     )
 )
@@ -63,116 +97,74 @@ config_setting(
     }
 )
 
-filegroup(
-    name = "irrlicht_files",
-    srcs = glob(
-        include=[
-            "irrlicht-1.8.4/**/*"
-        ]
-    )
-)
-
-irrlicht_defines = select({
+user_config_defines = select({
     "//conditions:default": [],
-    ":no_renderer_direct3d8": ["export NO_IRR_COMPILE_WITH_DIRECT3D_8_=1"]
+    ":no_renderer_direct3d8": ["NO_IRR_COMPILE_WITH_DIRECT3D_8_=1"]
     # Handle D3D9
     }) + select({
         "//conditions:default": [],
-        ":no_renderer_direct3d9": ["export NO_IRR_COMPILE_WITH_DIRECT3D_9_=1"]
+        ":no_renderer_direct3d9": ["NO_IRR_COMPILE_WITH_DIRECT3D_9_=1"]
     # Handle OpenGL
     }) + select({
         "//conditions:default": [],
-        ":no_renderer_opengl": ["export NO_IRR_COMPILE_WITH_OPENGL_=1"]
+        ":no_renderer_opengl": ["NO_IRR_COMPILE_WITH_OPENGL_=1"]
     # Handle software
     }) + select({
         "//conditions:default": [],
-        ":no_renderer_software": ["export NO_IRR_COMPILE_WITH_SOFTWARE_=1"]
+        ":no_renderer_software": ["NO_IRR_COMPILE_WITH_SOFTWARE_=1"]
     # Handle burnings
     }) + select({
         "//conditions:default": [],
-        ":no_renderer_burnings": ["export NO_IRR_COMPILE_WITH_BURNINGSVIDEO_=1"]
+        ":no_renderer_burnings": ["NO_IRR_COMPILE_WITH_BURNINGSVIDEO_=1"]
     }
 )
 
-make_command = select({
-    "//conditions:default": [
-        "pushd source/Irrlicht",
-        "make -j$(nproc)",
-    ],
-
-    "@bazel_tools//src/conditions:darwin": [
-        "pushd source/Irrlicht/MacOSX",
-        # xcodebuild fails - if it does work where does it end up at?
-        "xcodebuild",
-    ]
-})
-
-collect_command = select({
-    "//conditions:default": [
-        # Make install doesn't work so we install it ourselves
-        "mkdir -p $INSTALLDIR/lib",
-        "mkdir -p $INSTALLDIR/include",
-        "cp lib/Linux/libIrrlicht.a $INSTALLDIR/lib",
-        "cp include/*.h $INSTALLDIR/include",
-    ],
-
-    "@bazel_tools//src/conditions:windows": [
-        # Make install doesn't work so we install it ourselves
-        "mkdir -p $INSTALLDIR/lib",
-        "mkdir -p $INSTALLDIR/include",
-        "cp lib/Win64-visualStudio/libIrrlicht.lib $INSTALLDIR/lib",
-        "cp include/*.h $INSTALLDIR/include",
-    ],
-
-    "@bazel_tools//src/conditions:darwin": [
-
-    ]
-})
-
-make(
+cc_library(
     name = "irrlicht",
-    lib_source = "irrlicht_files",
-
-    static_libraries = select({
-        "@bazel_tools//src/conditions:windows": ["libIrrlicht.lib"],
-        "//conditions:default": ["libIrrlicht.a"]
-    }),
-    make_commands = irrlicht_defines + make_command + [
-        "popd",
-    ] + collect_command,
-    visibility = ["//visibility:public"]
-)
-
-cc_library(
-    name = "irrlicht_headers",
-
-    hdrs = glob(["irrlicht-1.8.4/include/irrlicht/*.h"]),
-    includes = ["irrlicht-1.8.4/include"],
-    visibility = ["//visibility:public"],
-)
-
-
-cc_import(
-    name = "irrlicht_dll",
-    alwayslink = True,
-    shared_library = "irrlicht-1.8.4/bin/Win64-visualStudio/Irrlicht.dll",
-    visibility = ["//visibility:public"]
-)
-
-
-cc_import(
-    name = "irrlicht_lib",
-    alwayslink = True,
-    static_library = "irrlicht-1.8.4/lib/Win64-visualStudio/Irrlicht.lib",
-    visibility = ["//visibility:public"]
-)
-
-cc_library(
-    name = "irrlicht_prebuilt",
-    deps = [
-         "irrlicht_headers",
-         "irrlicht_lib",
-         "irrlicht_dll"
+    srcs = [
+        ":irrlicht_sources"
     ],
+    hdrs = [
+        ":irrlicht_includes"
+    ],
+    includes = [
+        "irrlicht-1.8.4/include",
+
+        "irrlicht-1.8.4/source/Irrlicht/zlib",
+        "irrlicht-1.8.4/source/Irrlicht/jpeglib",
+        "irrlicht-1.8.4/source/Irrlicht/libpng",
+    ],
+    defines = [
+        "IRRLICHT_EXPORTS=1",
+
+        "PNG_THREAD_UNSAFE_OK",
+        "DPNG_NO_MMX_CODE",
+        "PNG_NO_MNG_FEATURES"
+    ] + user_config_defines,
+    copts = [
+        "-Wall",
+        "-pipe",
+        "-fno-exceptions",
+        "-fno-rtti",
+        "-fstrict-aliasing",
+
+        # Required for FS to compile
+        "-U__STRICT_ANSI__"
+    ],
+    linkopts = select({
+        "//conditions:default": [
+            "-lGL",
+            "-lXxf86vm"
+        ],
+
+        "@bazel_tools//src/conditions:windows": [
+            "-lgdi32",
+            "-lopengl32",
+            "-ld3dx9d",
+            "-lwinmm",
+            "-Wl"
+        ]
+    }),
+
     visibility = ["//visibility:public"],
 )
