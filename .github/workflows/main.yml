@@ -35,9 +35,9 @@ jobs:
             - uses: actions/checkout@v2
             - uses: seanmiddleditch/gha-setup-ninja@master
 
-            - name: actions-bazelisk
-              uses: suyash/actions-bazelisk@v1
-
+            - name: Setup Bazelisk
+              uses: bazelbuild/setup-bazelisk@v1.0.1
+                          
             - name: Install Ubuntu Dependencies
               if: ${{ matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04' }}
               run: sudo apt-get install -y libgl-dev libgl1-mesa-dev libx11-dev mesa-common-dev libglu1-mesa-dev libxxf86vm-dev libxcursor-dev libpango1.0-dev libpangocairo-1.0-0 libcairo2-dev
