@@ -50,6 +50,16 @@ cc_test(
 )
 
 cc_test(
+    name = "zlib",
+    srcs = [
+        "zlib.c"
+    ],
+    deps = [
+        "@zlib//:zlib"
+    ]
+)
+
+cc_test(
     name = "enet",
     srcs = [
         "enet.cpp"
@@ -77,7 +87,7 @@ cc_test(
 cc_test(
     name = "curl",
     srcs = [
-        "curl.cpp"
+        "curl.c"
     ],
     deps = [
         "@curl//:curl"
@@ -97,4 +107,16 @@ cc_test(
 
         ],
     })
+)
+
+
+test_suite(
+    name = "test_all",
+    tests = [
+        ":curl",
+        ":irrlicht",
+        ":enet",
+        ":zlib",
+        ":physfs"
+    ]
 )

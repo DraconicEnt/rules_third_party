@@ -49,20 +49,8 @@ jobs:
                 ln -s /usr/local/opt/openssl/include/openssl /usr/local/include
                 ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/
 
-            - name: Build & Test ENet
+            - name: Build & Test All
               run: |
-                bazel test //tests:enet
-              env:
-                USE_BAZEL_VERSION: ${{ matrix.bazel }}
-
-            - name: Build & Test PhysFS
-              run: |
-                bazel test //tests:physfs
-              env:
-                USE_BAZEL_VERSION: ${{ matrix.bazel }}
-
-            - name: Build & Test Irrlicht
-              run: |
-                bazel test //tests:irrlicht --define irrlicht_d3d8=disabled --define irrlicht_d3d9=disabled
+                bazel test //tests:test_all
               env:
                 USE_BAZEL_VERSION: ${{ matrix.bazel }}
