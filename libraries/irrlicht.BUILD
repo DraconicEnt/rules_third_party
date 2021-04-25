@@ -158,11 +158,10 @@ cc_library(
         ],
 
         "@bazel_tools//src/conditions:windows": [
-            "-lgdi32",
-            "-lopengl32",
-            "-ld3dx9d",
-            "-lwinmm",
-            "-Wl"
+            "gdi32.lib",
+            "opengl32.lib",
+            "d3dx9d.lib",
+            "winmm.lib",
         ]
     }),
 
