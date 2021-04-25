@@ -5,7 +5,9 @@ cc_test(
     srcs = [
         "irrlicht.cpp"
     ],
-    deps = select_irrlicht,
+    deps = [
+        "@irrlicht//:irrlicht"
+    ],
     linkopts =  select({
         "@bazel_tools//src/conditions:windows": [],
         "@bazel_tools//src/conditions:darwin": [
