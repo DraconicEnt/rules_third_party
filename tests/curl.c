@@ -4,9 +4,9 @@ int main(int argc, char* argv[])
 {
     CURL* curl = curl_easy_init();
 
-    if (curl)
-    {
+    //if (curl)
+   // {
         return 0;
-    }
-    return 1;
+   // }
+   // return 1;
 }

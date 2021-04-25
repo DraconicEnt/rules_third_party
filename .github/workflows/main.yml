@@ -51,6 +51,6 @@ jobs:
 
             - name: Build & Test All
               run: |
-                bazel test //tests:test_all
+                bazel test //tests:test_all -k
               env:
                 USE_BAZEL_VERSION: ${{ matrix.bazel }}

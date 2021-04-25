@@ -60,6 +60,16 @@ cc_test(
 )
 
 cc_test(
+    name = "bullet",
+    srcs = [
+        "bullet.cpp"
+    ],
+    deps = [
+        "@bullet//:bullet"
+    ]
+)
+
+cc_test(
     name = "enet",
     srcs = [
         "enet.cpp"
@@ -117,6 +127,7 @@ test_suite(
         ":irrlicht",
         ":enet",
         ":zlib",
-        ":physfs"
+        ":physfs",
+		":bullet
     ]
 )
