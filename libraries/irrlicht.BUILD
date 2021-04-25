@@ -24,12 +24,7 @@ filegroup(
             "irrlicht-1.8.4/source/Irrlicht/**/*.h",
             "irrlicht-1.8.4/source/Irrlicht/**/*.hpp"
         ]
-    ) + select({
-		"//conditions:default": [],
-		"@bazel_tools//src/conditions:darwin": [
-			"irrlicht-1.8.4/source/Irrlicht/MacOSX/OSXClipboard.h"
-		]
-	})
+    )
 )
 
 filegroup(

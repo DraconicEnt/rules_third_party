@@ -23,7 +23,7 @@ filegroup(
 ))
 
 cmake(
-    name = "bullet",
+    name = "bullet_build",
     lib_source = ":bullet_files",
 
     cache_entries = {
@@ -66,7 +66,17 @@ cmake(
             "libLinearMath.a",
             "libBullet3Common.a",
         ]
-    }),
+    })
+)
 
-    visibility = ["//visibility:public"]
+# NOTE: This is necessary because of the way the bullet includes work
+cc_library(
+	name = "bullet",
+	deps = [
+		":bullet_build"
+	],
+	includes = [
+		"bullet_build/include/bullet"
+	],
+	visibility = ["//visibility:public"]
 )
