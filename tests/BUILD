@@ -128,6 +128,6 @@ test_suite(
         ":enet",
         ":zlib",
         ":physfs",
-		":bullet
+		":bullet"
     ]
 )
