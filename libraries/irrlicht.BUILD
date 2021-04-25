@@ -119,6 +119,11 @@ user_config_defines = select({
     }
 )
 
+selects.config_setting_group(
+    name = "windows_and_no_d3d9",
+    match_all = ["@bazel_tools//src/conditions:windows", ":no_renderer_direct3d9"],
+)
+
 cc_library(
     name = "irrlicht",
     srcs = [
@@ -141,16 +146,21 @@ cc_library(
         "DPNG_NO_MMX_CODE",
         "PNG_NO_MNG_FEATURES"
     ] + user_config_defines,
-    copts = [
-        "-Wall",
-        "-pipe",
-        "-fno-exceptions",
-        "-fno-rtti",
-        "-fstrict-aliasing",
+    copts = select({
+		 "//conditions:default": [
+			"-Wall",
+			"-pipe",
+			"-fno-exceptions",
+			"-fno-rtti",
+			"-fstrict-aliasing",
 
-        # Required for FS to compile
-        "-U__STRICT_ANSI__"
-    ],
+			# Required for FS to compile
+			"-U__STRICT_ANSI__"
+		 ],
+		 
+		"@bazel_tools//src/conditions:windows": [
+		]
+	}),
     linkopts = select({
         "//conditions:default": [
             "-lGL",
@@ -160,10 +170,22 @@ cc_library(
         "@bazel_tools//src/conditions:windows": [
             "gdi32.lib",
             "opengl32.lib",
-            "d3dx9d.lib",
             "winmm.lib",
-        ]
-    }),
+			"User32.lib",
+            "Advapi32.lib",
+            "Shell32.lib",
+			"d3dx9d.lib"
+		],
+		
+		":windows_and_no_d3d9": [
+            "gdi32.lib",
+            "opengl32.lib",
+            "winmm.lib",
+			"User32.lib",
+            "Advapi32.lib",
+            "Shell32.lib"
+		],
+	}),
 
     visibility = ["//visibility:public"],
 )
