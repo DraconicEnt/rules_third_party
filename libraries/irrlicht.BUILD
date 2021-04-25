@@ -24,7 +24,12 @@ filegroup(
             "irrlicht-1.8.4/source/Irrlicht/**/*.h",
             "irrlicht-1.8.4/source/Irrlicht/**/*.hpp"
         ]
-    )
+    ) + select({
+		"//conditions:default": [],
+		"@bazel_tools//src/conditions:darwin": [
+			"irrlicht-1.8.4/source/Irrlicht/MacOSX/OSXClipboard.h"
+		]
+	})
 )
 
 filegroup(
@@ -58,7 +63,14 @@ filegroup(
             "irrlicht-1.8.4/source/Irrlicht/jpeglib/cdjpeg.c",
             "irrlicht-1.8.4/source/Irrlicht/jpeglib/ansi2knr.c",
         ]
-    )
+    ) + select({
+		"//conditions:default": [],
+		"@bazel_tools//src/conditions:darwin": [
+			"irrlicht-1.8.4/source/Irrlicht/MacOSX/CIrrDeviceMacOSX.cpp",
+			"irrlicht-1.8.4/source/Irrlicht/MacOSX/OSXClipboard.mm",
+			"irrlicht-1.8.4/source/Irrlicht/MacOSX/AppDelegate.cpp"
+		]
+	})
 )
 
 # Renderer configuration
