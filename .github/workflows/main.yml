@@ -37,7 +37,7 @@ jobs:
 
             - name: Setup Bazelisk
               uses: bazelbuild/setup-bazelisk@v1.0.1
-                          
+
             - name: Install Ubuntu Dependencies
               if: ${{ matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04' }}
               run: sudo apt-get install -y libgl-dev libgl1-mesa-dev libx11-dev mesa-common-dev libglu1-mesa-dev libxxf86vm-dev libxcursor-dev libpango1.0-dev libpangocairo-1.0-0 libcairo2-dev
@@ -45,22 +45,24 @@ jobs:
             - name: Install MacOS Dependencies
               if: ${{ matrix.os == 'macos-11.0' || matrix.os == 'macos-10.15' }}
               run: |
-                brew install openssl irrlicht
+                brew install openssl
                 ln -s /usr/local/opt/openssl/include/openssl /usr/local/include
                 ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/
-
-            - name: Set Bazelisk Version ${{ matrix.bazel }}
-              run: |
-                echo ${{ matrix.bazel }} > .bazelversion
 
             - name: Build & Test ENet
               run: |
                 bazel test //tests:enet
+              env:
+                USE_BAZEL_VERSION: ${{ matrix.bazel }}
 
             - name: Build & Test PhysFS
               run: |
                 bazel test //tests:physfs
+              env:
+                USE_BAZEL_VERSION: ${{ matrix.bazel }}
 
             - name: Build & Test Irrlicht
               run: |
                 bazel test //tests:irrlicht --define irrlicht_d3d8=disabled --define irrlicht_d3d9=disabled
+              env:
+                USE_BAZEL_VERSION: ${{ matrix.bazel }}
