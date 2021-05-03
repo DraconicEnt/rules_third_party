@@ -49,6 +49,12 @@ jobs:
                 ln -s /usr/local/opt/openssl/include/openssl /usr/local/include
                 ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/
 
+            - name: Bazel Version
+              run: |
+                bazel version
+              env:
+                USE_BAZEL_VERSION: ${{ matrix.bazel }}
+
             - name: Build & Test All
               run: |
                 bazel test //tests:test_all -k
