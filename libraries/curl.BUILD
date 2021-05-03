@@ -12,7 +12,7 @@
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 
 filegroup(
     name = "curl_sources",
@@ -23,11 +23,11 @@ filegroup(
     )
 )
 
-cmake_external(
+cmake(
     name = "curl",
     lib_source = ":curl_sources",
 
-    static_libraries = select({
+    out_static_libs = select({
         "@bazel_tools//src/conditions:windows": [
            "libcurl_imp.lib"
         ],
@@ -36,7 +36,7 @@ cmake_external(
         "//conditions:default": []
     }),
 
-    shared_libraries = select({
+    out_shared_libs = select({
         "@bazel_tools//src/conditions:windows": [],
 
         # Linux
@@ -48,20 +48,9 @@ cmake_external(
         "//conditions:default": False
     }),
 
-    cmake_options = select({
+    generate_args = select({
        "@bazel_tools//src/conditions:windows": ["-GNinja"],
        "//conditions:default": None
-    }),
-
-    make_commands = select({
-       "@bazel_tools//src/conditions:windows": [
-           "ninja",
-           "ninja install"
-       ],
-       "//conditions:default": [
-           "make -j$(nproc)",
-           "make install"
-       ]
     }),
 
     visibility = ["//visibility:public"]

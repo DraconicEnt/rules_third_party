@@ -12,7 +12,7 @@
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 
 filegroup(
     name = "bullet_files",
@@ -22,8 +22,8 @@ filegroup(
         ]
 ))
 
-cmake_external(
-    name = "bullet",
+cmake(
+    name = "bullet_build",
     lib_source = ":bullet_files",
 
     cache_entries = {
@@ -44,23 +44,12 @@ cmake_external(
         "//conditions:default": False
     }),
 
-    cmake_options = select({
+    generate_args = select({
        "@bazel_tools//src/conditions:windows": ["-GNinja"],
        "//conditions:default": None
     }),
 
-    make_commands = select({
-       "@bazel_tools//src/conditions:windows": [
-           "ninja",
-           "ninja install"
-       ],
-       "//conditions:default": [
-           "make -j$(nproc)",
-           "make install"
-       ]
-    }),
-
-    static_libraries = select({
+    out_static_libs = select({
         "@bazel_tools//src/conditions:windows": [
             "BulletDynamics.lib",
             "BulletCollision.lib",
@@ -77,7 +66,17 @@ cmake_external(
             "libLinearMath.a",
             "libBullet3Common.a",
         ]
-    }),
+    })
+)
 
-    visibility = ["//visibility:public"]
+# NOTE: This is necessary because of the way the bullet includes work
+cc_library(
+	name = "bullet",
+	deps = [
+		":bullet_build"
+	],
+	includes = [
+		"bullet_build/include/bullet"
+	],
+	visibility = ["//visibility:public"]
 )
