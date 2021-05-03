@@ -58,7 +58,7 @@ jobs:
 
             - name: Build & Test All
               run: |
-                bazel test tests:test_all -k
+                bazel test tests:test_all -k --define irrlicht_d3d9=disabled
               shell: bash
               env:
                 USE_BAZEL_VERSION: ${{ matrix.bazel }}
