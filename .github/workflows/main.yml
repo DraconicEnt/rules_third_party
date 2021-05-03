@@ -52,11 +52,13 @@ jobs:
             - name: Bazel Version
               run: |
                 bazel version
+              shell: bash
               env:
                 USE_BAZEL_VERSION: ${{ matrix.bazel }}
 
             - name: Build & Test All
               run: |
                 bazel test //tests:test_all -k
+              shell: bash
               env:
                 USE_BAZEL_VERSION: ${{ matrix.bazel }}
