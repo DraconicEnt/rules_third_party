@@ -21,7 +21,11 @@ cc_test(
             "-lX11",
             "-lXxf86vm"
         ],
-    })
+    }),
+    target_compatible_with = [
+        "@platforms//os:windows",
+        "@platforms//os:linux"
+    ]
 )
 
 cc_test(
@@ -116,7 +120,11 @@ cc_test(
         "//conditions:default": [
 
         ],
-    })
+    }),
+    target_compatible_with = [
+        "@platforms//os:windows",
+        "@platforms//os:linux"
+    ]
 )
 
 
