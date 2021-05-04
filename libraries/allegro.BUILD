@@ -12,7 +12,7 @@
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 
 filegroup(
     name = "allegro_sources",
@@ -23,7 +23,7 @@ filegroup(
     )
 )
 
-cmake_external(
+cmake(
     name = "allegro",
     lib_source = ":allegro_sources",
 
@@ -32,7 +32,7 @@ cmake_external(
         "//conditions:default": False
     }),
 
-    cmake_options = select({
+    generate_args = select({
        "@bazel_tools//src/conditions:windows": ["-GNinja"],
        "//conditions:default": None
     }),
@@ -53,24 +53,13 @@ cmake_external(
 
     ],
 
-    make_commands = select({
-        "@bazel_tools//src/conditions:windows": [
-            "ninja",
-            "ninja install"
-        ],
-        "//conditions:default": [
-            "make -j$(nproc)",
-            "make install"
-        ]
-    }),
-
     deps = [
         "@enet//:enet",
         "@zlib//:zlib",
         "@physfs//:physfs"
     ],
 
-    static_libraries = select({
+    out_static_libs = select({
         "@bazel_tools//src/conditions:windows": [
             "allegro_physfs.lib",
             "allegro_acodec.lib",
@@ -88,7 +77,7 @@ cmake_external(
         "//conditions:default": []
     }),
 
-    binaries = select({
+    out_binaries = select({
         "@bazel_tools//src/conditions:windows": [
             "allegro-5.2.dll",
             "allegro_physfs-5.2.dll"
@@ -98,7 +87,7 @@ cmake_external(
         ]
     }),
 
-    shared_libraries = select({
+    out_shared_libs = select({
         "@bazel_tools//src/conditions:windows": [
 
         ],
@@ -106,24 +95,34 @@ cmake_external(
         "//conditions:default": [
             "liballegro_physfs.so",
             "liballegro_physfs.so.5.2",
+
             "liballegro_acodec.so",
             "liballegro_acodec.so.5.2",
+
             "liballegro_color.so",
             "liballegro_color.so.5.2",
+
             "liballegro_ttf.so",
             "liballegro_ttf.so.5.2",
+
             "liballegro_font.so",
             "liballegro_font.so.5.2",
+
             "liballegro_image.so",
             "liballegro_image.so.5.2",
+
             "liballegro_main.so",
             "liballegro_main.so.5.2",
+
             "liballegro.so",
             "liballegro.so.5.2",
+
             "liballegro_audio.so",
             "liballegro_audio.so.5.2",
+
             "liballegro_memfile.so",
             "liballegro_memfile.so.5.2",
+
             "liballegro_primitives.so",
             "liballegro_primitives.so.5.2"
         ]

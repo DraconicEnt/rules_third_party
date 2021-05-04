@@ -51,10 +51,9 @@ local_repository(
 maybe(
     http_archive,
     name = "rules_foreign_cc",
-    strip_prefix = "rules_foreign_cc-main",
-    # FIXME: Ideally this is locked to a specific version
-    #sha256 = "3e6b0691fc57db8217d535393dcc2cf7c1d39fc87e9adb6e7d7bab1483915110",
-    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/main.zip",
+    sha256 = "d54742ffbdc6924f222d2179f0e10e911c5c659c4ae74158e9fe827aad862ac6",
+    strip_prefix = "rules_foreign_cc-0.2.0",
+    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.2.0.tar.gz"
 )
 
 load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
