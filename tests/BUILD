@@ -25,8 +25,8 @@ cc_test(
     target_compatible_with = select({
         "@platforms//os:linux": [],
         "@platforms//os:windows": [],
-        "//conditions:default": ["@platforms//:incompatible"]
-    }) 
+        "//conditions:default": ["@platforms//os:linux", "@platforms//os:windows"] # Provide an impossible constraint set so the tests are skipped and not failed
+    })
 )
 
 cc_test(
@@ -124,7 +124,7 @@ cc_test(
     }),
     target_compatible_with = select({
         "@platforms//os:linux": [],
-        "//conditions:default": ["@platforms//:incompatible"]
+        "//conditions:default": ["@platforms//os:linux", "@platforms//os:windows"] # Provide an impossible constraint set so the tests are skipped and not failed
     })
 )
 
