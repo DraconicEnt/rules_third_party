@@ -22,10 +22,11 @@ cc_test(
             "-lXxf86vm"
         ],
     }),
-    target_compatible_with = [
-        "@platforms//os:windows",
-        "@platforms//os:linux"
-    ]
+    target_compatible_with = select({
+        "@platforms//os:linux": [],
+        "@platforms//os:windows": [],
+        "//conditions:default": ["@platforms//:incompatible"]
+    }) 
 )
 
 cc_test(
@@ -121,10 +122,10 @@ cc_test(
 
         ],
     }),
-    target_compatible_with = [
-        "@platforms//os:windows",
-        "@platforms//os:linux"
-    ]
+    target_compatible_with = select({
+        "@platforms//os:linux": [],
+        "//conditions:default": ["@platforms//:incompatible"]
+    })
 )
 
 
