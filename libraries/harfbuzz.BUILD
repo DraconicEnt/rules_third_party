@@ -47,7 +47,7 @@ cmake_external(
        ]
     }),
 
-    static_libraries = select({
+    out_static_libs = select({
         "@bazel_tools//src/conditions:windows": [
             "harfbuzz.lib"
         ],

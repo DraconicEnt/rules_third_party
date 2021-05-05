@@ -20,7 +20,8 @@ filegroup(
         include=[
             "**/*"
         ]
-))
+    )
+)
 
 cmake_external(
     name = "graphviz",
@@ -123,7 +124,7 @@ cmake_external(
         "//conditions:default": {
             "CMAKE_CXX_FLAGS": "-I $EXT_BUILD_DEPS/harfbuzz/include/harfbuzz",
             "CMAKE_C_FLAGS": "-I $EXT_BUILD_DEPS/harfbuzz/include/harfbuzz",
-            "BISON_EXECUTABLE": "$EXT_BUILD_DEPS/bison_linux/bin/bison"
+            "BISON_EXECUTABLE": "$EXT_BUILD_DEPS/bison/bin/bison"
         }
     }),
 
@@ -132,7 +133,7 @@ cmake_external(
         "@harfbuzz//:harfbuzz"
     ] + select({
         "@bazel_tools//src/conditions:windows": ["@bison_windows//:bison_windows", "@bison_windows//:flex_windows"],
-        "//conditions:default": ["@bison_linux//:bison_linux"]
+        "//conditions:default": ["@bison//:bison"]
     }),
 
     visibility = ["//visibility:public"]
