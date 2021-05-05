@@ -100,17 +100,23 @@ cc_binary(
             "https://mirrors.ocf.berkeley.edu/gnu/bison/bison-3.7.tar.gz",
             "https://gnu.askapache.com/bison/bison-3.7.tar.gz"
         ],
+        strip_prefix = "bison-3.7",
 
         build_file_content = """
 load("@rules_foreign_cc//tools/build_defs:configure.bzl", "configure_make")
 
+filegroup(
+    name = "bison_files",
+    srcs = glob(
+        include=[
+            "**/*"
+        ]
+    )
+)
+
 configure_make(
     name = "bison_linux",
-    lib_source = "@bison_linux//:bison-3.7",
-    make_commands = [
-        "make -j$(nproc)",
-        "make install"
-    ],
+    lib_source = ":bison_files",
     binaries = [
         "bison",
         "yacc"
