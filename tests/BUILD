@@ -30,6 +30,16 @@ cc_test(
 )
 
 cc_test(
+    name = "osg",
+    srcs = [
+        "osg.cpp"
+    ],
+    deps = [
+        "@osg//:osg"
+    ]
+)
+
+cc_test(
     name = "physfs",
     srcs = [
         "physfs.cpp"
@@ -133,6 +143,7 @@ test_suite(
     name = "test_all",
     tests = [
         ":curl",
+        ":osg",
         ":irrlicht",
         ":enet",
         ":zlib",

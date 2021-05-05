@@ -25,7 +25,7 @@ def osg():
         commit = "a827840baf0786d72e11ac16d5338a4ee25779db",
         shallow_since = "1580468587 +0000",
         build_file_content = """
-load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 
 filegroup(
     name = "osg_sources",
@@ -36,7 +36,7 @@ filegroup(
     )
 )
 
-cmake_external(
+cmake(
 name = "osg",
 lib_source = ":osg_sources",
 
@@ -68,7 +68,7 @@ deps = [
     #"@freetype//:freetype"
 ],
 
-static_libraries = select({
+out_static_libs = select({
     "@bazel_tools//src/conditions:windows": [
         "osgUI.lib",
         "osgParticle.lib",
@@ -93,7 +93,7 @@ static_libraries = select({
     "//conditions:default": []
 }),
 
-binaries = select({
+out_binaries = select({
     "@bazel_tools//src/conditions:windows": [
         "osg161-osg.dll",
         "osg161-osgViewer.dll",
@@ -109,7 +109,7 @@ binaries = select({
     ]
 }),
 
-shared_libraries = select({
+out_shared_libs = select({
     "@bazel_tools//src/conditions:windows": [
 
     ],
@@ -161,20 +161,9 @@ generate_crosstool_file = select({
     "//conditions:default": False
 }),
 
-cmake_options = select({
+generate_args = select({
    "@bazel_tools//src/conditions:windows": ["-GNinja"],
    "//conditions:default": None
-}),
-
-make_commands = select({
-   "@bazel_tools//src/conditions:windows": [
-       "ninja",
-       "ninja install"
-   ],
-   "//conditions:default": [
-        "make -j$(nproc)",
-        "make install"
-   ]
 }),
 
 visibility = ["//visibility:public"]

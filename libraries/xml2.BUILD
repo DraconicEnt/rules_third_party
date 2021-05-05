@@ -12,7 +12,7 @@
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 
 filegroup(
     name = "xml2_files",
@@ -22,7 +22,7 @@ filegroup(
     ])
 )
 
-cmake_external(
+cmake(
     name = "xml2",
     lib_source = ":xml2_files",
 
@@ -60,7 +60,7 @@ cmake_external(
         "@zlib//:zlib"
     ],
 
-    shared_libraries = select({
+    out_shared_libs = select({
         "@bazel_tools//src/conditions:windows": [],
         "//conditions:default": [
             "libxml2.so",
@@ -68,7 +68,7 @@ cmake_external(
         ]
     }),
 
-    static_libraries = select({
+    out_static_libs = select({
         "@bazel_tools//src/conditions:windows": ["libxml2.lib"],
         "//conditions:default": []
     }),
