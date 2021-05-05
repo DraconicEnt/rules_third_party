@@ -45,23 +45,16 @@ cmake(
        "//conditions:default": None
     }),
 
-    make_commands = select({
-       "@bazel_tools//src/conditions:windows": [
-           "ninja",
-           "ninja install"
-       ],
-       "//conditions:default": [
-           "make -j$(nproc)",
-           "make install"
-       ]
-    }),
-
     deps = [
         "@zlib//:zlib"
     ],
 
     out_shared_libs = select({
         "@bazel_tools//src/conditions:windows": [],
+        "@bazel_tools//src/conditions:darwin": [
+            "libxml2.dylib",
+            "libxml2.2.9.10.dylib"
+        ],
         "//conditions:default": [
             "libxml2.so",
             "libxml2.so.2.9.10"
